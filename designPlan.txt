@@ -2,7 +2,7 @@ Scrapers:
  - Windguru:
     - Live wind
     - Forcast wind
-    - forcast waves 
+    - forcast waves
  - Mac (maybe)
     - Live
  - MSW (maybe)
@@ -30,7 +30,7 @@ Frontend:
 Backend: 
 
  - Rating model:
-    - each sports ratings are based on weights of each of the parameters in the weather.
+    - each sports ratings are base on weights of each of the parameters in the weather.
         eg. wind is weighted highly for kiting, but temparature is rated higher for climbing.
     
 
