@@ -30,10 +30,10 @@ def weatherSummary():
     return output
 
 
-@app.route("/api/getActivityList")
-def activityList():
+@app.route("/api/getRatingList")
+def getRatingList():
 
-    activityList = []
+    ratingList = []
 
     latestLiveWind = list(wgCol.find({}))[-1]
 
@@ -44,7 +44,7 @@ def activityList():
     d = dankOMeter()
 
     for sport in config.sports:
-        activityList.append(
+        ratingList.append(
             {
                 "sport": sport,
                 "rating": d.getRating(sport, weatherObj)
@@ -52,7 +52,7 @@ def activityList():
         )
 
     return {
-        "activitySummary": activityList
+        "ratingList": ratingList
     }
 
 
