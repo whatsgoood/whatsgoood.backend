@@ -1,0 +1,5 @@
+sports = [
+    "Kiting",
+    "Surfing",
+    "Climbing"
+]
