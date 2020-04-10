@@ -10,13 +10,13 @@ mongoUrl = environ.get('WHATSGOOD_CONSTR')
 
 client = pymongo.MongoClient(mongoUrl)
 db = client['plagiarismDB']
-wgCol = db['windGuruCollection']
+windCol = db['windCollection']
 
 
 @app.route("/api/getWeatherSummary")
 def weatherSummary():
 
-    latestLiveWind = list(wgCol.find({}))[-1]
+    latestLiveWind = list(windCol.find({}))[-1]
 
     output = {
         "latestWindReading" : {
@@ -35,7 +35,7 @@ def getSportList():
 
     sportList = []
 
-    latestLiveWind = list(wgCol.find({}))[-1]
+    latestLiveWind = list(windCol.find({}))[-1]
 
     weatherObj = {
         "latestWindReading": latestLiveWind

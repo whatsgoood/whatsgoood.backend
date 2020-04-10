@@ -5,7 +5,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
-
 import time
 import pymongo
 from os import environ
@@ -22,7 +21,7 @@ mongoUrl = environ.get('WHATSGOOD_CONSTR')
 
 client = pymongo.MongoClient(mongoUrl)
 db = client['plagiarismDB']
-macWindCol = db['macWindCollection']
+windCol = db['windCollection']
 
 while True:
     browser.get(macWindSite)
@@ -36,6 +35,6 @@ while True:
 
     print(f"{{ avg: {avg}, low : {low}, high : {high}, direction : {direction} }}")
 
-    macWindCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
+    windCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
 
     time.sleep(1)

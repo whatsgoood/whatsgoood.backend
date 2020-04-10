@@ -21,7 +21,7 @@ mongoUrl = environ.get('WHATSGOOD_CONSTR')
 
 client = pymongo.MongoClient(mongoUrl)
 db = client['plagiarismDB']
-macWindCol = db['windGuruCollection']
+windCol = db['windCollection']
 
 while True:
     browser.get(wgSite)
@@ -35,6 +35,6 @@ while True:
 
     print(f"{{ avg: {avg}, low : {low}, high : {high}, direction : {direction} }}")
 
-    macWindCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
+    windCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
 
     time.sleep(1)
