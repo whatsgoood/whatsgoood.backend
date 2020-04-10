@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "startServer": "cd ../api && python3 server.py",
+    "server": "cd ../api && python3 server.py",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

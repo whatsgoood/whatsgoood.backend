@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Sport } from './sport.model';
 
 @Injectable({
     providedIn: 'root'
@@ -14,9 +15,8 @@ export class SportService {
         private http: HttpClient
     ) { }
 
-    // TODO: update type to rating list model
     getSportList() {
-        return this.http.get(this.sportUrl)
+        return this.http.get<Sport[]>(this.sportUrl)
             .pipe(
                 catchError(this.handleError)
             );
