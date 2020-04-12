@@ -1,0 +1,9 @@
+<div class="card-container">
+    <div *ngFor="let sport of sports">
+        <a class="card" [ngClass]="ratingClass(sport.rating)">
+            <img *ngIf="isKiting(sport.name)" src="../../assets/kite.svg">
+            <img *ngIf="isSurfing(sport.name)" src="../../assets/surfing.svg">
+            <img *ngIf="isClimbing(sport.name)" src="../../assets/climbing.svg">
+        </a>
+    </div>
+</div>
