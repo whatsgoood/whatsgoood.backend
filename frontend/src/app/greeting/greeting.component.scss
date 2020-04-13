@@ -32,24 +32,9 @@
     margin-left: 60px;
 }
 
-svg#rocket {
-    width: 80px;
+img#beach {
+    width: 79px;
     position: absolute;
     left: -10px;
-    top: -24px;
-}
-
-svg#rocket-smoke {
-    height: calc(100vh - 95px);
-    position: absolute;
-    top: 35px;
-    right: 130px;
-    z-index: -10;
-}
-
-@media screen and (max-width: 575px) {
-    svg#rocket-smoke {
-        display: none;
-        visibility: hidden;
-    }
+    top: -23px;
 }
