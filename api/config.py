@@ -1,5 +1,0 @@
-sports = [
-    "Kiting",
-    "Surfing",
-    "Climbing"
-]
