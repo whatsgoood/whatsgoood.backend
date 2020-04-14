@@ -1,41 +1,43 @@
+from flask import jsonify
 from os import environ
 import pymongo
+
 from app.main.service import sportService, weatherService
-from app.main.dankOMeter import dankOMeter
 from app.main.model import weatherEvalModel
-from flask import jsonify
+from app.main.sportEvaluator.sportEvaluator import weight
 
 ws = weatherService()
 ss = sportService()
 
 def sportList():
 
-    sportList = []
+    sportList = ss.getSupportedSports()
 
-    latestLiveWind = ws.getWindInfo()[1]
-    latestLiveWaves = ws.getWaveInfo()[1]
+    outSportList = []
 
-    wem = weatherEvalModel(
-        windHigh = latestLiveWind.high,
-        windLow = latestLiveWind.low,
-        windAvg = latestLiveWind.avg,
-        windDirection = latestLiveWind.direction,
+    for sport in sportList: 
 
-        waveSize = latestLiveWaves.size,
-        wavePeriod = latestLiveWaves.period
+        #TODO: create getEvalModel method on weatherService
 
-        # cloudCover =
-        # temparature =
-        # chanceOfRain =
-    )
-    
-    d = dankOMeter()
+        weatherModel = weatherEvalModel(
+                windHigh = 35.0,
+                windLow = 15.0,
+                windAvg = 25.0,
+                windDirection = "SSE",
 
-    for sport in ss.getSupportedSports():
-        sportList.append(
+                waveSize = 5.5,
+                wavePeriod = 10,
+
+                cloudCover = 0.0,
+                temparature = 24,
+                chanceOfRain = 0.0,
+            ).__dict__
+
+
+        outSportList.append(
             {
                 "name": sport,
-                "rating": d.getRating(sport, wem)
+                "rating": weight(weatherModel, sport)
             }
         )
 

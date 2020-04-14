@@ -6,6 +6,9 @@ class weatherService():
 
     def __init__(self):
         self.db = dbContext()
+
+    def getEvalModel(self):
+        pass
         
     def getWindInfo(self):
 
