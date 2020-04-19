@@ -7,16 +7,15 @@
 
 .card {
     border-radius: 20px;
-    background-color: #fafafa;
-    height: 40px;
+    height: 60px;
     width: 200px;
     margin: 0 8px 16px;
     padding: 16px;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.2s;
     line-height: 24px;
 }
 
@@ -46,4 +45,12 @@
 
 .card-container .card:not(.highlight-card):hover {
     box-shadow: 0px 40px 17px rgba(black, 0.35);
+}
+
+.weather-text {
+    display: none;
+}
+
+.card:hover .weather-text {
+    display: block;
 }

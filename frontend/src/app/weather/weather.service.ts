@@ -1,22 +1,22 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Sport } from './sport.model';
+import { throwError } from 'rxjs';
+import { Weather } from './weather.model';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SportService {
-    private sportUrl = environment.baseApiUrl + 'getSportList';
+export class WeatherService {
+    private weatherUrl = environment.baseApiUrl + 'getWeatherSummary';
 
     constructor(
         private http: HttpClient
     ) { }
 
-    public getSportList() {
-        return this.http.get<Sport[]>(this.sportUrl)
+    public getWeather() {
+        return this.http.get<Weather>(this.weatherUrl)
             .pipe(
                 catchError(this.handleError)
             );
