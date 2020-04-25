@@ -1,5 +1,6 @@
 from app.main.sportEvaluator.error import incompleteWeightError
 
+# region Documentation
 # Weighting Model Docs:
 
 # All weights must add up to 1
@@ -9,7 +10,7 @@ from app.main.sportEvaluator.error import incompleteWeightError
 # Simply give it a weight in the sportWeight table, and it will be normalised between a max and min value using the normalise table
 
 # If there is an optimal point for a particular piece of weather info(eg. climbing where you'd like temps to be around 10-15 deg)
-# Then you have to pass in a dictionary, eg. 
+# Then you have to pass in a dictionary, eg.
 
 # "temparature": {
 #     "weight": .40,
@@ -18,8 +19,8 @@ from app.main.sportEvaluator.error import incompleteWeightError
 # }
 #
 # Where optmialValue = the value that would yield the best results for that sport
-# And tolerance is how far to either side you are willing to accept. Note that this is exclusive. 
-# If your optimal is 10 and your tolerance is 5, 15 will yield a 0 rating. 
+# And tolerance is how far to either side you are willing to accept. Note that this is exclusive.
+# If your optimal is 10 and your tolerance is 5, 15 will yield a 0 rating.
 
 # If you need to use an optimal value, but your tolerance is lower on one side than the other, then you can set upperBound and lowerBound:
 
@@ -32,63 +33,68 @@ from app.main.sportEvaluator.error import incompleteWeightError
 
 # Currently values increase linearly as they tend toward your optimal value
 
-#eg. : 
+# eg. :
 
 #                                    dankness (y)
 #                                       |
 #                                      10------------- 0
-#                                       |             / \    
-#                                       |           /    \   
-#                                       |         /       \  
+#                                       |             / \
+#                                       |           /    \
+#                                       |         /       \
 #                                       |       /          \         upperBound
 #                                       |     /             \      /
 #                                       |   /                \   /
-#-----------------------------------------1-------------6-----8--------------------- temp (x)
+# -----------------------------------------1-------------6-----8--------------------- temp (x)
 #                                       |  \            \
 #                                       |   \            \
-#                                       |    lowerBound   optimalValue  
+#                                       |    lowerBound   optimalValue
 #                                       |
 #                                       |
 #                                       |
-#          
+#
+#
+# endregion
 
-#TODO: create an optimal plateau lower and upper bound, end of plateau bound should then taper down to actual lower and upper bounds
+# TODO: create an optimal plateau lower and upper bound, end of plateau bound
+# should then taper down to actual lower and upper bounds
+
+# region Weights
 
 sportWeights = {
-    "ClimbingWeights" : {
+    "ClimbingWeights": {
         "temparature": {
             "weight": .30,
-            "optimalValue" : 15,
+            "optimalValue": 15,
             "tupperBound": 26,
             "lowerBound": 7
         },
         "windHigh": -.05,
-        "windAvg" : -.05,
+        "windAvg": -.05,
 
-        "cloudCover" : -.10,
-        "chanceOfRain" : {
+        "cloudCover": -.10,
+        "chanceOfRain": {
             "weight": .50,
             "optimalValue": 0,
             "upperBound": 25,
             "lowerBound": -1
         }
     },
-    "SurfingWeights" : {
-        "windAvg" : -.2,
+    "SurfingWeights": {
+        "windAvg": -.2,
 
-        "waveSize" : {
+        "waveSize": {
             "weight": .4,
             "optimalValue": 8,
             "upperBound": 20,
             "lowerBound": 2
         },
-        "wavePeriod" : -.1,
+        "wavePeriod": -.1,
 
-        "cloudCover" : -.05,
-        "temparature" : .10,
-        "chanceOfRain" : -.15
+        "cloudCover": -.05,
+        "temparature": .10,
+        "chanceOfRain": -.15
     },
-    "KitingWeights" : {
+    "KitingWeights": {
         "windHigh": {
             "weight": .4,
             "optimalValue": 45,
@@ -103,20 +109,20 @@ sportWeights = {
             "lowerBound": 7
 
         },
-        "waveSize" : .1,
-        "temparature" : .1,
-        "chanceOfRain" : -.1
+        "waveSize": .1,
+        "temparature": .1,
+        "chanceOfRain": -.1
     }
 }
 
 normaliseTable = {
-    "wind" : {
+    "wind": {
         "max": 30.0,
-        "min" : 5.0,
+        "min": 5.0,
     },
-    "windDirection":{
+    "windDirection": {
         "SE": .5,
-        "SSE":.5,
+        "SSE": .5,
         "NW": .3,
         "SW": .2
     },
@@ -126,7 +132,7 @@ normaliseTable = {
     },
     "wavePeriod": {
         "max": 17.0,
-        "min": 7.0 
+        "min": 7.0
     },
     "temparature": {
         "max": 50.0,
@@ -134,8 +140,10 @@ normaliseTable = {
     }
 }
 
+# endregion
+
 def weight(weatherModel, sport):
-    
+
     rating = 0.0
 
     weightName = sport + "Weights"
@@ -144,9 +152,9 @@ def weight(weatherModel, sport):
 
     totalWeight = 0.0
 
-    for key in sportWeightModel: 
+    for key in sportWeightModel:
 
-        if isinstance(sportWeightModel[key],dict):
+        if isinstance(sportWeightModel[key], dict):
 
             value = normaliseForOptimal(sportWeightModel[key], weatherModel[key])
             weight = sportWeightModel[key]['weight']
@@ -166,7 +174,7 @@ def weight(weatherModel, sport):
 def normalise(key, value):
 
     normalisedValue = 0.0
-    
+
     if key == "windDirection":
         try:
             normalisedValue = normaliseTable["windDirection"][value]
@@ -193,27 +201,27 @@ def normalise(key, value):
         normalisedValue = 1
     if normalisedValue < 0:
         normalisedValue = 0
-    
+
     return normalisedValue
 
 def normaliseForOptimal(sportWeight, value):
-    
+
     normalisedValue = 0.0
 
     optimalValue = sportWeight['optimalValue']
 
-    if "tolerance" in sportWeight: 
+    if "tolerance" in sportWeight:
 
         tolerance = sportWeight['tolerance']
 
         difference = abs(optimalValue - value)
 
-        percentLoss = difference / tolerance 
+        percentLoss = difference / tolerance
 
         normalisedValue = 1 - percentLoss
 
     elif "upperBound" in sportWeight and "lowerBound" in sportWeight:
-        
+
         diff = value - optimalValue
         diffAbs = abs(value - optimalValue)
 
@@ -232,6 +240,4 @@ def normaliseForOptimal(sportWeight, value):
     if normalisedValue < 0:
         normalisedValue = 0
 
-    return normalisedValue      
-
-
+    return normalisedValue
