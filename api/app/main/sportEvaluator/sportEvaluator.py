@@ -7,9 +7,11 @@ from app.main.sportEvaluator.error import incompleteWeightError
 
 # In the case that a rating should get better as a particular piece of weather info tends toward a certain value
 # eg. Temparature for kiting can never really be too high.
-# Simply give it a weight in the sportWeight table, and it will be normalised between a max and min value using the normalise table
+# Simply give it a weight in the sportWeight table, and it will be normalised between a max and min value using the
+# normalise table
 
-# If there is an optimal point for a particular piece of weather info(eg. climbing where you'd like temps to be around 10-15 deg)
+# If there is an optimal point for a particular piece of weather info(eg. climbing where you'd like temps to be around
+# 10-15 deg)
 # Then you have to pass in a dictionary, eg.
 
 # "temparature": {
@@ -22,7 +24,8 @@ from app.main.sportEvaluator.error import incompleteWeightError
 # And tolerance is how far to either side you are willing to accept. Note that this is exclusive.
 # If your optimal is 10 and your tolerance is 5, 15 will yield a 0 rating.
 
-# If you need to use an optimal value, but your tolerance is lower on one side than the other, then you can set upperBound and lowerBound:
+# If you need to use an optimal value, but your tolerance is lower on one side than the other, then you can set
+# upperBound and lowerBound:
 
 # "temparature": {
 #     "weight": .40,
