@@ -1,4 +1,3 @@
-# from app.main.sportEvaluator.error.incompleteWeightError import incompleteWeightError
 from app.main.sportEvaluator.error import incompleteWeightError
 
 # Weighting Model Docs:
@@ -56,7 +55,7 @@ from app.main.sportEvaluator.error import incompleteWeightError
 #TODO: create an optimal plateau lower and upper bound, end of plateau bound should then taper down to actual lower and upper bounds
 
 sportWeights = {
-    "climbingWeights" : {
+    "ClimbingWeights" : {
         "temparature": {
             "weight": .30,
             "optimalValue" : 15,
@@ -71,10 +70,10 @@ sportWeights = {
             "weight": .50,
             "optimalValue": 0,
             "upperBound": 25,
-            "lowerBound": 0
+            "lowerBound": -1
         }
     },
-    "surfingWeights" : {
+    "SurfingWeights" : {
         "windAvg" : -.2,
 
         "waveSize" : {
@@ -89,16 +88,22 @@ sportWeights = {
         "temparature" : .10,
         "chanceOfRain" : -.15
     },
-    "kitingWeights" : {
+    "KitingWeights" : {
         "windHigh": {
             "weight": .4,
-            "optimalValue": 40,
+            "optimalValue": 45,
             "upperBound": 70,
             "lowerBound": 7
 
         },
-        "windAvg" : .2,
-        "waveSize" : .2,
+        "windAvg": {
+            "weight": .3,
+            "optimalValue": 35,
+            "upperBound": 70,
+            "lowerBound": 7
+
+        },
+        "waveSize" : .1,
         "temparature" : .1,
         "chanceOfRain" : -.1
     }
@@ -153,8 +158,8 @@ def weight(weatherModel, sport):
         rating += value * weight
         totalWeight += abs(weight)
 
-    if totalWeight != 1:
-        raise incompleteWeightError(sport)
+    if round(totalWeight, 3) != 1:
+        raise incompleteWeightError(totalWeight)
 
     return rating
 

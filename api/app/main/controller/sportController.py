@@ -20,16 +20,16 @@ def sportList():
         #TODO: create getEvalModel method on weatherService
 
         weatherModel = weatherEvalModel(
-                windHigh = 35.0,
-                windLow = 15.0,
-                windAvg = 25.0,
-                windDirection = "SSE",
+                windHigh = 5.0,
+                windLow = 2.0,
+                windAvg = 3.0,
+                windDirection = "W",
 
-                waveSize = 5.5,
+                waveSize = 8.5,
                 wavePeriod = 10,
 
                 cloudCover = 0.0,
-                temparature = 24,
+                temparature = 15,
                 chanceOfRain = 0.0,
             ).__dict__
 
@@ -41,4 +41,4 @@ def sportList():
             }
         )
 
-    return jsonify(sportList)
+    return jsonify(outSportList)
