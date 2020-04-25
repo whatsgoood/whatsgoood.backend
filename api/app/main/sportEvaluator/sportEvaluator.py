@@ -1,4 +1,5 @@
-from error import incompleteWeightError
+# from app.main.sportEvaluator.error.incompleteWeightError import incompleteWeightError
+from app.main.sportEvaluator.error import incompleteWeightError
 
 # Weighting Model Docs:
 
@@ -52,7 +53,7 @@ from error import incompleteWeightError
 #                                       |
 #          
 
-#TODO: create an optimal plateau lower and upper bound, end of plateau bound should then taper down to actual lower and upper bounds should 
+#TODO: create an optimal plateau lower and upper bound, end of plateau bound should then taper down to actual lower and upper bounds
 
 sportWeights = {
     "climbingWeights" : {
