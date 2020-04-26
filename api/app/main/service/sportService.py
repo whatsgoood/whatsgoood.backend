@@ -1,5 +1,5 @@
 import os
-from app.main import dbContext
+from app.main.db import dbContext
 from app.main import config
 from app.main.model import windModel
 
@@ -9,7 +9,7 @@ class sportService():
 
     def __init__(self):
         self.db = dbContext()
-        
+
     def getSupportedSports(self):
 
         return self.supportedSports

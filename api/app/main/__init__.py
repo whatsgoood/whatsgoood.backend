@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import config_by_name
-from .dbContext import dbContext
+from .db.dbContext import dbContext
 from .service import weatherService
 # from .sportEvaluator import weight
 

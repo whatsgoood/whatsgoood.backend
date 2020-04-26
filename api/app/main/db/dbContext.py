@@ -1,11 +1,14 @@
 from os import environ
 import pymongo
 
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
+
 class dbContext:
 
     windCol = []
-    waveCol  = []
-    weatherCol  = []
+    waveCol = []
+    weatherCol = []
 
     def __init__(self):
         mongoUrl = environ.get('WHATSGOOD_CONSTR')

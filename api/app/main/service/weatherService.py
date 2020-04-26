@@ -1,5 +1,5 @@
 import os
-from app.main import dbContext
+from app.main.db import dbContext
 from app.main.model import windModel, waveModel
 
 class weatherService():
@@ -9,7 +9,7 @@ class weatherService():
 
     def getEvalModel(self):
         pass
-        
+
     def getWindInfo(self):
 
         windModels = []

@@ -10,7 +10,8 @@ import pymongo
 from os import environ
 
 options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
+options.add_argument(
+    "user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
 
 browser = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
 wait = WebDriverWait(browser, 10)
@@ -26,7 +27,7 @@ windCol = db['windCollection']
 while True:
     browser.get(macWindSite)
     wait.until(ec.visibility_of_element_located((By.XPATH, "(//tr)[2]/td")))
-    
+
     topRow = browser.find_elements_by_xpath("(//tr)[2]/td")
     avg = float(topRow[0].text)
     low = float(topRow[1].text)
@@ -35,6 +36,8 @@ while True:
 
     print(f"{{ avg: {avg}, low : {low}, high : {high}, direction : {direction} }}")
 
-    windCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
+    windCol.insert_one(
+        {"avg": avg, "low": low, "high": high, "direction": direction}
+        )
 
     time.sleep(1)
