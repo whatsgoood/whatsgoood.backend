@@ -13,7 +13,8 @@ import pymongo
 from os import environ
 
 options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
+options.add_argument(
+    "user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
 
 browser = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
 wait = WebDriverWait(browser, 10)
@@ -26,30 +27,31 @@ client = pymongo.MongoClient(mongoUrl)
 db = client['plagiarismDB']
 wavesCol = db['wavesCollection']
 
+wavesCol.create_index("date", expireAfterSeconds=(2 * 86400))  # 2 days
+
 while True:
     browser.get(mswSite)
-    wait.until(ec.visibility_of_element_located((By.XPATH, "//tr[@data-forecast-day='1']")))
-    
-    wavesTable = browser.find_elements_by_xpath("//tr[@data-forecast-day='1']")[2:]
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, "//tr[@data-forecast-day='1']")))
+
+    wavesTable = browser.find_elements_by_xpath(
+        "//tr[@data-forecast-day='1']")[2:]
 
     now = datetime.datetime.now().time().hour
 
-    percent = (now/24)
+    percent = (now / 24)
 
     closestRowIndex = round(6 * percent) - 1
 
     liveRow = wavesTable[closestRowIndex]
 
-    waveDetails = liveRow.find_elements_by_xpath(".//td/h4[@class='nomargin font-sans-serif heavy']")
+    waveDetails = liveRow.find_elements_by_xpath(
+        ".//td/h4[@class='nomargin font-sans-serif heavy']")
 
     waveSize = float(waveDetails[0].text[:-2])
     wavePeriod = float(waveDetails[1].text[:-1])
+    timestamp = datetime.datetime.utcnow()
 
-    print(f"{{ waveSize: {waveSize}ft, wavePeriod : {wavePeriod}s }}")
-
-    wavesCol.insert_one( { "waveSize": waveSize, "wavePeriod" : wavePeriod })
+    wavesCol.insert_one({"date": timestamp, "waveSize": waveSize, "wavePeriod": wavePeriod})
 
     time.sleep(2)
-
-    # Should most likely update every hour
-    # time.sleep(3600)
