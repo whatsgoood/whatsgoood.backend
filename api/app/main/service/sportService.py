@@ -1,5 +1,5 @@
 import os
-from app.main.db import dbContext
+from app.main import dbContext
 from app.main import config
 from app.main.model import windModel
 

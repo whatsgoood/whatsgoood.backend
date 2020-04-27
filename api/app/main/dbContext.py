@@ -1,9 +1,6 @@
 from os import environ
 import pymongo
 
-from apscheduler.schedulers.background import BackgroundScheduler
-import time
-
 class dbContext:
 
     windCol = []

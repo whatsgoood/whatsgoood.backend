@@ -11,8 +11,7 @@ import pymongo
 from os import environ
 
 options = webdriver.ChromeOptions()
-options.add_argument(
-    "user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
+options.add_argument("user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
 
 browser = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
 wait = WebDriverWait(browser, 10)

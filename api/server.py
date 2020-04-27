@@ -1,7 +1,5 @@
 from app import app
 from app.main.controller import weatherController, sportController
-from app.main.db import dbCleaner
-import atexit
 
 @app.route("/api/getWeatherSummary")
 def getWeatherSummary():
@@ -14,8 +12,6 @@ def getSportList():
 
 
 def run():
-    dbC = dbCleaner()
-    atexit.register(lambda: dbC.scheduler.shutdown())
     app.run()
 
 if __name__ == '__main__':

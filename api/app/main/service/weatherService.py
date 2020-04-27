@@ -1,5 +1,5 @@
 import os
-from app.main.db import dbContext
+from app.main import dbContext
 from app.main.model import windModel, waveModel
 
 class weatherService():
@@ -17,10 +17,10 @@ class weatherService():
         for wm in list(self.db.windCol.find({})):
             windModels.append(
                 windModel(
-                    high = wm['high'],
-                    low = wm['low'],
-                    avg = wm['avg'],
-                    direction = wm['direction']
+                    high=wm['high'],
+                    low=wm['low'],
+                    avg=wm['avg'],
+                    direction=wm['direction']
                 )
             )
 
@@ -33,8 +33,8 @@ class weatherService():
         for wm in list(self.db.waveCol.find({})):
             waveModels.append(
                 waveModel(
-                    size = wm['waveSize'],
-                    period = wm['wavePeriod']
+                    size=wm['waveSize'],
+                    period=wm['wavePeriod']
                 )
             )
 
@@ -44,4 +44,3 @@ class weatherService():
 
 # def getWeatherInfo(self):
 #     return list(db.weatherCol.find({}))
-
