@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
+import datetime
 import time
 import pymongo
 from os import environ
@@ -23,18 +24,22 @@ client = pymongo.MongoClient(mongoUrl)
 db = client['plagiarismDB']
 windCol = db['windCollection']
 
+windCol.create_index("date", expireAfterSeconds=(2 * 86400))  # 2 days
+
 while True:
     browser.get(macWindSite)
     wait.until(ec.visibility_of_element_located((By.XPATH, "(//tr)[2]/td")))
-    
+
     topRow = browser.find_elements_by_xpath("(//tr)[2]/td")
     avg = float(topRow[0].text)
     low = float(topRow[1].text)
     high = float(topRow[2].text)
     direction = topRow[3].text
 
-    print(f"{{ avg: {avg}, low : {low}, high : {high}, direction : {direction} }}")
+    timestamp = datetime.datetime.utcnow()
 
-    windCol.insert_one({ "avg": avg, "low" : low, "high" : high, "direction" : direction})
+    windCol.insert_one(
+        {"date": timestamp, "avg": avg, "low": low, "high": high, "direction": direction}
+    )
 
     time.sleep(1)

@@ -4,8 +4,8 @@ import pymongo
 class dbContext:
 
     windCol = []
-    waveCol  = []
-    weatherCol  = []
+    waveCol = []
+    weatherCol = []
 
     def __init__(self):
         mongoUrl = environ.get('WHATSGOOD_CONSTR')

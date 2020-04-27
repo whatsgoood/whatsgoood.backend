@@ -9,7 +9,7 @@ class sportService():
 
     def __init__(self):
         self.db = dbContext()
-        
+
     def getSupportedSports(self):
 
         return self.supportedSports
