@@ -1,33 +1,12 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
-import time
 import datetime
-import pymongo
-from os import environ
-
-options = webdriver.ChromeOptions()
-options.add_argument(
-    "user-data-dir=C:\\Users\\kritz\\AppData\\Local\\Google\\Chrome\\Selenium Data")
-
-browser = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-wait = WebDriverWait(browser, 10)
 
 wgSite = 'https://www.windguru.cz/station/42'
 
-mongoUrl = environ.get('WHATSGOOD_CONSTR')
+def scrapeWG(browser, wait, collection):
 
-client = pymongo.MongoClient(mongoUrl)
-db = client['plagiarismDB']
-windCol = db['windCollection']
-
-windCol.create_index("date", expireAfterSeconds=(2 * 86400))  # 2 days
-
-while True:
     browser.get(wgSite)
 
     wait.until(ec.visibility_of_element_located(
@@ -44,8 +23,8 @@ while True:
 
     timestamp = datetime.datetime.utcnow()
 
-    windCol.insert_one(
-        {"date": timestamp, "avg": avg, "low": low, "high": high, "direction": direction}
-    )
+    record = {"date": timestamp, "avg": avg, "low": low, "high": high, "direction": direction}
 
-    time.sleep(1)
+    collection.insert_one(record)
+
+    print("added wind record")
