@@ -23,8 +23,6 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install -r requirements.txt
-    - name: Zip the application files
-      run: zip -r myapp.zip .
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
@@ -32,4 +30,4 @@ jobs:
         app-name: 'whatsgooodapi'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_f5fb103c82744d4195725b45718228a5 }}
-        package: './myapp.zip'
+        package: './'
