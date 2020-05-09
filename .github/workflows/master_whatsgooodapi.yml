@@ -22,8 +22,9 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pyenv env
-        source env/bin/activate
+        pip install virtualenv
+        virtualenv whatsgoood
+        source whatsgoood/bin/activate
         pip install -r requirements.txt
 
     - name: Zip the application files
