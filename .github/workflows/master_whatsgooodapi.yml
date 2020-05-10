@@ -20,15 +20,8 @@ jobs:
       with:
         python-version: '3.6'
 
-    - name: Install Python dependencies
-      run: |
-        pip install virtualenv
-        virtualenv whatsgoood
-        source whatsgoood/bin/activate
-        pip install -r requirements.txt
-
     - name: Zip the application files
-      run: zip -r myapp.zip .
+      run: Compress-Archive . whatsgoood.zip
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
@@ -36,4 +29,4 @@ jobs:
         app-name: 'whatsgooodapi'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_f5fb103c82744d4195725b45718228a5 }}
-        package: './myapp.zip'
+        package: './whatsgoood.zip'
