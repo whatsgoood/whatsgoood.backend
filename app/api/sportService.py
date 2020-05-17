@@ -7,6 +7,7 @@ supportedSports = [
     "Climbing"
 ]
 
+
 def getSupportedSports():
 
     return supportedSports

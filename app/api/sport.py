@@ -9,6 +9,7 @@ sport_bp = Blueprint('sport', __name__)
 # ws = weatherService()
 # ss = sportService()
 
+
 @sport_bp.route('/sport')
 def sports():
 
@@ -16,7 +17,7 @@ def sports():
 
     # outSportList = []
 
-    # for sport in sportList: 
+    # for sport in sportList:
 
     #     #TODO: create getEvalModel method on weatherService
 
@@ -33,7 +34,6 @@ def sports():
     #             temparature = 15,
     #             chanceOfRain = 0.0,
     #         ).__dict__
-
 
     #     outSportList.append(
     #         {

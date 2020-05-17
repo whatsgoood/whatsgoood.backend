@@ -145,6 +145,7 @@ normaliseTable = {
 
 # endregion
 
+
 def weight(weatherModel, sport):
 
     rating = 0.0
@@ -159,7 +160,8 @@ def weight(weatherModel, sport):
 
         if isinstance(sportWeightModel[key], dict):
 
-            value = normaliseForOptimal(sportWeightModel[key], weatherModel[key])
+            value = normaliseForOptimal(
+                sportWeightModel[key], weatherModel[key])
             weight = sportWeightModel[key]['weight']
 
         else:
@@ -173,6 +175,7 @@ def weight(weatherModel, sport):
         raise incompleteWeightError(totalWeight)
 
     return rating
+
 
 def normalise(key, value):
 
@@ -206,6 +209,7 @@ def normalise(key, value):
         normalisedValue = 0
 
     return normalisedValue
+
 
 def normaliseForOptimal(sportWeight, value):
 

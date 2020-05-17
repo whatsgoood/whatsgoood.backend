@@ -1,7 +1,9 @@
 import os
 
+
 def getEvalModel():
     pass
+
 
 def getWindInfo():
     pass
@@ -18,6 +20,7 @@ def getWindInfo():
     #     )
 
     # return windModels
+
 
 def getWaveInfo():
     pass

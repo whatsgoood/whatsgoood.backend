@@ -2,6 +2,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config(object):
     MONGO_URL = os.environ.get('WHATSGOOD_CONSTR')
     DB_NAME = 'plagiarismDB'
@@ -10,18 +11,22 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
 
+
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     ENV = "development"
 
+
 class TestingConfig(Config):
     TESTING = True
     ENV = "development"
 
+
 class ProductionConfig(Config):
     DEBUG = False
     ENV = "production"
+
 
 sports = [
     "Kiting",

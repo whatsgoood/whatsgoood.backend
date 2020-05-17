@@ -6,6 +6,7 @@ weather_bp = Blueprint('weather', __name__)
 
 # ws = weatherService()
 
+
 @weather_bp.route('/weather')
 def weather():
 
