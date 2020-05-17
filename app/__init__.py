@@ -1,6 +1,15 @@
-import os
+from os import environ
+from flask import Flask
+from app.api import sport_bp, weather_bp, url_prefix
+import pymongo
 
-from app.main import create_app
-from .main.controller import weatherController
+app = Flask(__name__)
+app.config.from_object(environ.get('WHATSGOOOD_ENV'))
 
-app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
+# Initialize Flask Mongo DB
+client = pymongo.MongoClient(app.config['MONGO_URL'])
+db = client[app.config['DB_NAME']]
+
+# Register blue prints
+app.register_blueprint(sport_bp, url_prefix=url_prefix)
+app.register_blueprint(weather_bp, url_prefix=url_prefix)
