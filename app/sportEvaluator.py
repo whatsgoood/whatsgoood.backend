@@ -66,15 +66,15 @@ sportWeights = {
         "temparature": {
             "weight": .30,
             "optimalValue": 15,
-            "tupperBound": 26,
+            "tupperBound": 29,
             "lowerBound": 7
         },
         "windHigh": -.05,
         "windAvg": -.05,
 
-        "cloudCover": -.10,
+        "cloudCover": -.1,
         "chanceOfRain": {
-            "weight": .50,
+            "weight": -.5,
             "optimalValue": 0,
             "upperBound": 25,
             "lowerBound": -1
@@ -98,15 +98,15 @@ sportWeights = {
     "KitingWeights": {
         "windHigh": {
             "weight": .4,
-            "optimalValue": 45,
-            "upperBound": 70,
+            "optimalValue": 40,
+            "upperBound": 65,
             "lowerBound": 7
 
         },
         "windAvg": {
             "weight": .3,
-            "optimalValue": 35,
-            "upperBound": 70,
+            "optimalValue": 30,
+            "upperBound": 65,
             "lowerBound": 7
 
         },
