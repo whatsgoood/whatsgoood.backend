@@ -12,26 +12,24 @@ def get_ratings():
 
     weatherSummary = weatherSummaryModel(weatherSummaryDict)
 
-    test = weatherSummary.windInfo.high
-
     # region Seed
     # evaluationModel = weatherEvalModel(
 
-    #     windHigh=35.0,
-    #     windLow=20.0,
-    #     windAvg=27.0,
-    #     windDirection="SSE",
+    #     windHigh=10.0,
+    #     windLow=3.0,
+    #     windAvg=5.0,
+    #     windDirection="W",
 
-    #     waveSize=6.0,
+    #     waveSize=7.0,
     #     wavePeriod=12,
 
     #     cloudCover=0,
-    #     temparature=25,
+    #     temparature=15,
     #     chanceOfRain=0.0
 
     # ).__dict__
 
-    #endregion
+    # endregion
 
     evaluationModel = weatherEvalModel(
 
