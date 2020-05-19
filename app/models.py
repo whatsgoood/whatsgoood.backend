@@ -1,4 +1,40 @@
-from app import db
+from collections import namedtuple
+
+
+class windDBModel:
+
+    high = 0.0
+    low = 0.0
+    avg = 0.0
+    direction = "Default"
+
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k != "_id":
+                setattr(self, k, v)
+
+
+class waveDBModel:
+
+    size = 0.0
+    period = 0.0
+
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k != "_id":
+                setattr(self, k, v)
+
+
+class climateDBModel:
+
+    temp = 0.0
+    cloudCover = 0.0
+    Description = ""
+
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k != "_id":
+                setattr(self, k, v)
 
 
 class sportModel:
@@ -6,22 +42,25 @@ class sportModel:
     name = "Default"
     rating = 0.0
 
-    def __init__(self, name, rating):
-        self.name = name
-        self.rating = rating
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k != "_id":
+                setattr(self, k, v)
 
 
-class waveModel():
+class weatherSummaryModel:
 
-    size = 0.0
-    period = 0.0
+    windInfo = {}
+    waveInfo = {}
+    climateInfo = {}
 
-    def __init__(self, size, period):
-        self.size = size
-        self.period = period
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k != "_id":
+                setattr(self, k, v)
 
 
-class weatherEvalModel():
+class weatherEvalModel:
 
     windHigh = 0.0
     windLow = 0.0
@@ -35,7 +74,8 @@ class weatherEvalModel():
     temparature = 0.0
     chanceOfRain = 0.0
 
-    def __init__(self, windHigh=None, windLow=None, windAvg=None, windDirection=None, waveSize=None, wavePeriod=None, cloudCover=None, temparature=None, chanceOfRain=None):
+    def __init__(self, windHigh=None, windLow=None, windAvg=None, windDirection=None, waveSize=None, wavePeriod=None,
+                 cloudCover=None, temparature=None, chanceOfRain=None):
         self.windHigh = windHigh
         self.windLow = windLow
         self.windAvg = windAvg
@@ -47,17 +87,3 @@ class weatherEvalModel():
         self.cloudCover = cloudCover
         self.temparature = temparature
         self.chanceOfRain = chanceOfRain
-
-
-class windModel():
-
-    high = 0.0
-    low = 0.0
-    avg = 0.0
-    direction = "Default"
-
-    def __init__(self, high, low, avg, direction):
-        self.high = high
-        self.low = low
-        self.avg = avg
-        self.direction = direction

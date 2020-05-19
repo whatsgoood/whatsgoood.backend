@@ -1,8 +1,11 @@
 # Python env
 env/
+.env
 
+#logs
 .log
 
+#cache etc.
 *.swp
 *.*~
 project.lock.json

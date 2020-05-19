@@ -2,9 +2,8 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
 class Config(object):
-    MONGO_URL = os.environ.get('WHATSGOOD_CONSTR')
+    MONGO_URL = os.environ.get('WHATSGOOOD_CONSTR')
     DB_NAME = 'plagiarismDB'
     DEVELOPMENT = False
     DEBUG = False

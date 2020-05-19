@@ -1,6 +1,7 @@
 from app.error import incompleteWeightError
 
 # region Documentation
+
 # Weighting Model Docs:
 
 # All weights must add up to 1
@@ -57,9 +58,6 @@ from app.error import incompleteWeightError
 #
 #
 # endregion
-
-# TODO: create an optimal plateau lower and upper bound, end of plateau bound
-# should then taper down to actual lower and upper bounds
 
 # region Weights
 
@@ -145,7 +143,8 @@ normaliseTable = {
 
 # endregion
 
-
+# TODO: create an optimal plateau lower and upper bound, end of plateau bound
+# should then taper down to actual lower and upper bounds
 def weight(weatherModel, sport):
 
     rating = 0.0
