@@ -1,4 +1,4 @@
-from app.error import incompleteWeightError
+from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 
 # region Documentation
 
@@ -65,28 +65,25 @@ sportWeights = {
     "ClimbingWeights": {
         "temparature": {
             "weight": .30,
-            "optimalValue": 15,
-            "tupperBound": 26,
+            "upperBound": 29,
+            "optimalUpperBound": 20,
+            "optimalLowerBound": 12,
             "lowerBound": 7
         },
         "windHigh": -.05,
         "windAvg": -.05,
 
-        "cloudCover": -.10,
-        "chanceOfRain": {
-            "weight": .50,
-            "optimalValue": 0,
-            "upperBound": 25,
-            "lowerBound": -1
-        }
+        "cloudCover": -.1,
+        "chanceOfRain": -.5
     },
     "SurfingWeights": {
-        "windAvg": -.2,
+        "windHigh": -.2,
 
         "waveSize": {
             "weight": .4,
-            "optimalValue": 8,
             "upperBound": 20,
+            "optimalUpperBound": 10,
+            "optimalLowerBound": 7,
             "lowerBound": 2
         },
         "wavePeriod": -.1,
@@ -98,17 +95,18 @@ sportWeights = {
     "KitingWeights": {
         "windHigh": {
             "weight": .4,
-            "optimalValue": 45,
-            "upperBound": 70,
+            "upperBound": 65,
+            "optimalUpperBound": 45,
+            "optimalLowerBound": 25,
             "lowerBound": 7
 
         },
         "windAvg": {
             "weight": .3,
-            "optimalValue": 35,
-            "upperBound": 70,
+            "upperBound": 65,
+            "optimalUpperBound": 35,
+            "optimalLowerBound": 25,
             "lowerBound": 7
-
         },
         "waveSize": .1,
         "temparature": .1,
@@ -136,6 +134,10 @@ normaliseTable = {
         "min": 7.0
     },
     "temparature": {
+        "max": 50.0,
+        "min": 0.0
+    },
+    "chanceOfRain": {
         "max": 50.0,
         "min": 0.0
     }
@@ -194,9 +196,10 @@ def normalise(key, value):
             maxVal = normaliseTable[key]['max']
             minVal = normaliseTable[key]['min']
         except(KeyError):
-            return value
             # No value found in normalise table,
             # either not nessesary to normalise or not yet supported
+            return value
+            # raise NormaliseKeyNotFoundError(key)
 
     calculatedTotal = maxVal - minVal
 
@@ -214,9 +217,9 @@ def normaliseForOptimal(sportWeight, value):
 
     normalisedValue = 0.0
 
-    optimalValue = sportWeight['optimalValue']
-
     if "tolerance" in sportWeight:
+
+        optimalValue = sportWeight['optimalValue']
 
         tolerance = sportWeight['tolerance']
 
@@ -226,7 +229,32 @@ def normaliseForOptimal(sportWeight, value):
 
         normalisedValue = 1 - percentLoss
 
+    elif "optimalUpperBound" in sportWeight and "optimalLowerBound" in sportWeight:
+
+        if value <= sportWeight['optimalUpperBound'] and value >= sportWeight['optimalLowerBound']:
+
+            return 1
+
+        elif value > sportWeight['optimalUpperBound']:
+            diff = value - sportWeight['optimalUpperBound']
+            tolerance = sportWeight["upperBound"] - sportWeight['optimalUpperBound']
+
+            if diff > tolerance:
+                return 0
+
+        elif value < sportWeight['optimalLowerBound']:
+            diff = sportWeight['optimalLowerBound'] - value
+            tolerance = sportWeight['optimalLowerBound'] - sportWeight["lowerBound"]
+
+            if diff > tolerance:
+                return 0
+
+        percentLoss = diff / tolerance
+        normalisedValue = 1 - percentLoss
+
     elif "upperBound" in sportWeight and "lowerBound" in sportWeight:
+
+        optimalValue = sportWeight['optimalValue']
 
         diff = value - optimalValue
         diffAbs = abs(value - optimalValue)
