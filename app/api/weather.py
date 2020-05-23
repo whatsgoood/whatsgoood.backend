@@ -39,7 +39,7 @@ def climateInfo():
 
     climateInfo_Cursor = db.climateCollection.find({})
 
-    latestClimateInfo = list(climateInfo_Cursor)[0]
+    latestClimateInfo = list(climateInfo_Cursor)[-1]
 
     climateModel = climateDBModel(latestClimateInfo)
 
@@ -56,7 +56,7 @@ def waveInfo():
 
     waveInfo_Cursor = db.wavesCollection.find({})
 
-    latestWaveInfo = list(waveInfo_Cursor)[0]
+    latestWaveInfo = list(waveInfo_Cursor)[-1]
 
     waveModel = waveDBModel(latestWaveInfo)
 
@@ -73,7 +73,7 @@ def windInfo():
 
     windInfo_Cursor = db.windCollection.find({})
 
-    latestWindInfo = list(windInfo_Cursor)[0]
+    latestWindInfo = list(windInfo_Cursor)[-1]
 
     windModel = windDBModel(latestWindInfo)
 
