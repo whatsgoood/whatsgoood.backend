@@ -74,10 +74,16 @@ sportWeights = {
         "windAvg": -.05,
 
         "cloudCover": -.1,
-        "chanceOfRain": -.5
+        "rain": -.5
     },
     "SurfingWeights": {
-        "windHigh": -.2,
+        "windHigh": {
+            "weight": .2,
+            "upperBound": 15,
+            "optimalUpperBound": 10,
+            "optimalLowerBound": 2,
+            "lowerBound": 1
+        },
 
         "waveSize": {
             "weight": .4,
@@ -86,11 +92,23 @@ sportWeights = {
             "optimalLowerBound": 7,
             "lowerBound": 2
         },
-        "wavePeriod": -.1,
+        "wavePeriod": {
+            "weight": .1,
+            "upperBound": 16,
+            "optimalUpperBound": 12,
+            "optimalLowerBound": 7,
+            "lowerBound": 5
+        },
 
         "cloudCover": -.05,
-        "temparature": .10,
-        "chanceOfRain": -.15
+        "temparature": {
+            "weight": .10,
+            "upperBound": 40,
+            "optimalUpperBound": 35,
+            "optimalLowerBound": 15,
+            "lowerBound": 2
+        },
+        "rain": -.15
     },
     "KitingWeights": {
         "windHigh": {
@@ -98,25 +116,39 @@ sportWeights = {
             "upperBound": 65,
             "optimalUpperBound": 45,
             "optimalLowerBound": 25,
-            "lowerBound": 7
+            "lowerBound": 12
 
         },
         "windAvg": {
             "weight": .3,
             "upperBound": 65,
             "optimalUpperBound": 35,
-            "optimalLowerBound": 25,
-            "lowerBound": 7
+            "optimalLowerBound": 20,
+            "lowerBound": 10
+        },
+        "temparature": {
+            "weight": .1,
+            "upperBound": 50,
+            "optimalUpperBound": 45,
+            "optimalLowerBound": 20,
+            "lowerBound": 5
         },
         "waveSize": .1,
-        "temparature": .1,
-        "chanceOfRain": -.1
+        "rain": -.1
     }
 }
 
 normaliseTable = {
-    "wind": {
-        "max": 30.0,
+    "windHigh": {
+        "max": 40.0,
+        "min": 5.0,
+    },
+    "windAvg": {
+        "max": 40.0,
+        "min": 5.0,
+    },
+    "windLow": {
+        "max": 40.0,
         "min": 5.0,
     },
     "windDirection": {
@@ -126,7 +158,7 @@ normaliseTable = {
         "SW": .2
     },
     "waveSize": {
-        "max": 10.0,
+        "max": 15.0,
         "min": 2.0
     },
     "wavePeriod": {
@@ -137,8 +169,12 @@ normaliseTable = {
         "max": 50.0,
         "min": 0.0
     },
-    "chanceOfRain": {
-        "max": 50.0,
+    "rain": {
+        "max": 10.0,
+        "min": 0.0
+    },
+    "cloudCover": {
+        "max": 100.0,
         "min": 0.0
     }
 }
@@ -166,10 +202,16 @@ def weight(weatherModel, sport):
             weight = sportWeightModel[key]['weight']
 
         else:
-            value = normalise(key, weatherModel[key])
+
             weight = sportWeightModel[key]
 
-        rating += value * weight
+            if weight < 0:
+                value = normalise(key, weatherModel[key], invert=True)
+            else:
+                value = normalise(key, weatherModel[key], invert=False)
+
+        ratingIdv = value * abs(weight)
+        rating += ratingIdv
         totalWeight += abs(weight)
 
     if round(totalWeight, 3) != 1:
@@ -178,7 +220,7 @@ def weight(weatherModel, sport):
     return rating
 
 
-def normalise(key, value):
+def normalise(key, value, invert):
 
     normalisedValue = 0.0
 
@@ -187,10 +229,6 @@ def normalise(key, value):
             normalisedValue = normaliseTable["windDirection"][value]
         except(KeyError):
             normalisedValue = 0.0
-
-    if "wind" in key:
-        maxVal = normaliseTable["wind"]['max']
-        minVal = normaliseTable["wind"]['min']
     else:
         try:
             maxVal = normaliseTable[key]['max']
@@ -203,7 +241,10 @@ def normalise(key, value):
 
     calculatedTotal = maxVal - minVal
 
-    normalisedValue = (value - minVal) / calculatedTotal
+    if invert:
+        normalisedValue = (maxVal - value) / calculatedTotal
+    else:
+        normalisedValue = (value - minVal) / calculatedTotal
 
     if normalisedValue > 1:
         normalisedValue = 1
