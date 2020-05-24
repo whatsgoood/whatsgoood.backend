@@ -25,7 +25,7 @@ def get_ratings():
 
     #     cloudCover=0,
     #     temparature=15,
-    #     chanceOfRain=0.0
+    #     rain=0.0
 
     # ).__dict__
 
@@ -38,12 +38,12 @@ def get_ratings():
         windAvg=float(weatherSummary.windInfo.avg),
         windDirection=weatherSummary.windInfo.direction,
 
-        waveSize=float(weatherSummary.waveInfo.size),
-        wavePeriod=float(weatherSummary.waveInfo.period),
+        waveSize=float(weatherSummary.waveInfo.waveSize),
+        wavePeriod=float(weatherSummary.waveInfo.wavePeriod),
 
         cloudCover=float(weatherSummary.climateInfo.cloudcover),
         temparature=float(weatherSummary.climateInfo.temp),
-        chanceOfRain=0.0
+        rain=float(weatherSummary.climateInfo.rain)
 
     ).__dict__
 

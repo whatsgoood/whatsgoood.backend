@@ -16,8 +16,8 @@ class windDBModel:
 
 class waveDBModel:
 
-    size = 0.0
-    period = 0.0
+    waveSize = 0.0
+    wavePeriod = 0.0
 
     def __init__(self, dictionary):
         for k, v in dictionary.items():
@@ -30,6 +30,7 @@ class climateDBModel:
     temp = 0.0
     cloudCover = 0.0
     Description = ""
+    rain = 0.0
 
     def __init__(self, dictionary):
         for k, v in dictionary.items():
@@ -72,10 +73,10 @@ class weatherEvalModel:
 
     cloudCover = 0.0
     temparature = 0.0
-    chanceOfRain = 0.0
+    rain = 0.0
 
     def __init__(self, windHigh=None, windLow=None, windAvg=None, windDirection=None, waveSize=None, wavePeriod=None,
-                 cloudCover=None, temparature=None, chanceOfRain=None):
+                 cloudCover=None, temparature=None, rain=None):
         self.windHigh = windHigh
         self.windLow = windLow
         self.windAvg = windAvg
@@ -86,4 +87,4 @@ class weatherEvalModel:
 
         self.cloudCover = cloudCover
         self.temparature = temparature
-        self.chanceOfRain = chanceOfRain
+        self.rain = rain
