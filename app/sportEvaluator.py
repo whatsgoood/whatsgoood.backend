@@ -171,7 +171,7 @@ normaliseTable = {
         "min": 0.0
     },
     "rain": {
-        "max": 10.0,
+        "max": 1.0,
         "min": 0.0
     },
     "cloudCover": {
@@ -182,8 +182,6 @@ normaliseTable = {
 
 # endregion
 
-# TODO: create an optimal plateau lower and upper bound, end of plateau bound
-# should then taper down to actual lower and upper bounds
 def weight(weatherModel, sport):
 
     rating = 0.0
@@ -206,17 +204,11 @@ def weight(weatherModel, sport):
 
             weight = sportWeightModel[key]
 
-            # if weight < 0:
-            #     value = normalise(key, weatherModel[key], invert=True)
-            # else:
             value = normalise(key, weatherModel[key])
 
         ratingIdv = value * weight
         rating += ratingIdv
         totalWeight += abs(weight)
-
-    # if round(totalWeight, 3) != 1:
-    #     raise incompleteWeightError(totalWeight)
 
     return rating
 
@@ -242,9 +234,6 @@ def normalise(key, value):
 
     calculatedTotal = maxVal - minVal
 
-    # if invert:
-    #     normalisedValue = (maxVal - value) / calculatedTotal
-    # else:
     normalisedValue = (value - minVal) / calculatedTotal
 
     if normalisedValue > 1:
