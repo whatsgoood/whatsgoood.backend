@@ -73,8 +73,8 @@ sportWeights = {
         "windHigh": -.1,
         "windAvg": -.1,
 
-        "cloudCover": -.3,
-        "rain": -.5
+        "cloudCover": -.5,
+        "rain": -.8
     },
     "SurfingWeights": {
         "windHigh": {
@@ -100,7 +100,7 @@ sportWeights = {
             "lowerBound": 5
         },
 
-        "cloudCover": -.3,
+        "cloudCover": -.5,
         "temparature": {
             "weight": .2,
             "upperBound": 40,
@@ -108,7 +108,7 @@ sportWeights = {
             "optimalLowerBound": 15,
             "lowerBound": 2
         },
-        "rain": -.3
+        "rain": -.5
     },
     "KitingWeights": {
         "windHigh": {
