@@ -64,21 +64,21 @@ from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 sportWeights = {
     "ClimbingWeights": {
         "temparature": {
-            "weight": .30,
+            "weight": 1,
             "upperBound": 29,
             "optimalUpperBound": 20,
-            "optimalLowerBound": 12,
+            "optimalLowerBound": 10,
             "lowerBound": 7
         },
-        "windHigh": -.05,
-        "windAvg": -.05,
+        "windHigh": -.1,
+        "windAvg": -.1,
 
-        "cloudCover": -.1,
+        "cloudCover": -.3,
         "rain": -.5
     },
     "SurfingWeights": {
         "windHigh": {
-            "weight": .2,
+            "weight": .3,
             "upperBound": 15,
             "optimalUpperBound": 10,
             "optimalLowerBound": 2,
@@ -100,15 +100,15 @@ sportWeights = {
             "lowerBound": 5
         },
 
-        "cloudCover": -.05,
+        "cloudCover": -.3,
         "temparature": {
-            "weight": .10,
+            "weight": .2,
             "upperBound": 40,
             "optimalUpperBound": 35,
             "optimalLowerBound": 15,
             "lowerBound": 2
         },
-        "rain": -.15
+        "rain": -.3
     },
     "KitingWeights": {
         "windHigh": {
@@ -127,14 +127,15 @@ sportWeights = {
             "lowerBound": 10
         },
         "temparature": {
-            "weight": .1,
+            "weight": .2,
             "upperBound": 50,
             "optimalUpperBound": 45,
             "optimalLowerBound": 20,
             "lowerBound": 5
         },
         "waveSize": .1,
-        "rain": -.1
+        "cloudCover": -.3,
+        "rain": -.5
     }
 }
 
@@ -205,22 +206,22 @@ def weight(weatherModel, sport):
 
             weight = sportWeightModel[key]
 
-            if weight < 0:
-                value = normalise(key, weatherModel[key], invert=True)
-            else:
-                value = normalise(key, weatherModel[key], invert=False)
+            # if weight < 0:
+            #     value = normalise(key, weatherModel[key], invert=True)
+            # else:
+            value = normalise(key, weatherModel[key])
 
-        ratingIdv = value * abs(weight)
+        ratingIdv = value * weight
         rating += ratingIdv
         totalWeight += abs(weight)
 
-    if round(totalWeight, 3) != 1:
-        raise incompleteWeightError(totalWeight)
+    # if round(totalWeight, 3) != 1:
+    #     raise incompleteWeightError(totalWeight)
 
     return rating
 
 
-def normalise(key, value, invert):
+def normalise(key, value):
 
     normalisedValue = 0.0
 
@@ -241,10 +242,10 @@ def normalise(key, value, invert):
 
     calculatedTotal = maxVal - minVal
 
-    if invert:
-        normalisedValue = (maxVal - value) / calculatedTotal
-    else:
-        normalisedValue = (value - minVal) / calculatedTotal
+    # if invert:
+    #     normalisedValue = (maxVal - value) / calculatedTotal
+    # else:
+    normalisedValue = (value - minVal) / calculatedTotal
 
     if normalisedValue > 1:
         normalisedValue = 1
