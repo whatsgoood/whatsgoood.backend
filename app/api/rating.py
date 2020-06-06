@@ -2,8 +2,10 @@ from app.sportEvaluator import weight
 from app.api.weather import liveWeather
 from app.models import weatherSummaryModel, weatherEvalModel
 from flask import Blueprint, jsonify
+from flask_cors import CORS
 
 rating_bp = Blueprint('rating', __name__)
+CORS(rating_bp)
 
 @rating_bp.route('/ratings')
 def get_ratings():
