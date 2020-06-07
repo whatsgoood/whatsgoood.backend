@@ -2,9 +2,10 @@ from app.models import waveDBModel, windDBModel, climateDBModel, weatherSummaryM
 from app import db
 
 from flask import Blueprint
+from flask_cors import CORS
 
 weather_bp = Blueprint('weather', __name__)
-
+CORS(weather_bp)
 
 @weather_bp.route('/weather/live')
 def get_liveWeather():
