@@ -72,11 +72,11 @@ class weatherEvalModel:
     wavePeriod = 0.0
 
     cloudCover = 0.0
-    temparature = 0.0
+    temperature = 0.0
     rain = 0.0
 
     def __init__(self, windHigh=None, windLow=None, windAvg=None, windDirection=None, waveSize=None, wavePeriod=None,
-                 cloudCover=None, temparature=None, rain=None):
+                 cloudCover=None, temperature=None, rain=None):
         self.windHigh = windHigh
         self.windLow = windLow
         self.windAvg = windAvg
@@ -86,5 +86,5 @@ class weatherEvalModel:
         self.wavePeriod = wavePeriod
 
         self.cloudCover = cloudCover
-        self.temparature = temparature
+        self.temperature = temperature
         self.rain = rain

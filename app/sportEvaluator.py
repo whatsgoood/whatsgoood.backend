@@ -7,7 +7,7 @@ from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 # All weights must add up to 1
 
 # In the case that a rating should get better as a particular piece of weather info tends toward a certain value
-# eg. Temparature for kiting can never really be too high.
+# eg. temperature for kiting can never really be too high.
 # Simply give it a weight in the sportWeight table, and it will be normalised between a max and min value using the
 # normalise table
 
@@ -15,20 +15,20 @@ from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 # 10-15 deg)
 # Then you have to pass in a dictionary, eg.
 
-# "temparature": {
+# "temperature": {
 #     "weight": .40,
 #     "optimalValue" : 15,
 #     "tolerance" : 5
 # }
 #
-# Where optmialValue = the value that would yield the best results for that sport
+# Where optimalValue = the value that would yield the best results for that sport
 # And tolerance is how far to either side you are willing to accept. Note that this is exclusive.
 # If your optimal is 10 and your tolerance is 5, 15 will yield a 0 rating.
 
 # If you need to use an optimal value, but your tolerance is lower on one side than the other, then you can set
 # upperBound and lowerBound:
 
-# "temparature": {
+# "temperature": {
 #     "weight": .40,
 #     "optimalValue" : 15,
 #     "upperBound": 20,
@@ -63,7 +63,7 @@ from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 
 sportWeights = {
     "ClimbingWeights": {
-        "temparature": {
+        "temperature": {
             "weight": 1,
             "upperBound": 29,
             "optimalUpperBound": 20,
@@ -101,7 +101,7 @@ sportWeights = {
         },
 
         "cloudCover": -.5,
-        "temparature": {
+        "temperature": {
             "weight": .2,
             "upperBound": 40,
             "optimalUpperBound": 35,
@@ -126,7 +126,7 @@ sportWeights = {
             "optimalLowerBound": 20,
             "lowerBound": 10
         },
-        "temparature": {
+        "temperature": {
             "weight": .2,
             "upperBound": 50,
             "optimalUpperBound": 45,
@@ -136,7 +136,19 @@ sportWeights = {
         "waveSize": .1,
         "cloudCover": -.3,
         "rain": -.5
-    }
+    },
+    "CyclingWeights": {
+        "temperature": {
+            "weight": 1,
+            "upperBound": 29,
+            "optimalUpperBound": 23,
+            "optimalLowerBound": 16,
+            "lowerBound": 7
+        },
+        "windHigh": -.4,
+        "cloudCover": -.2,
+        "rain": -.4
+    },
 }
 
 normaliseTable = {
@@ -166,7 +178,7 @@ normaliseTable = {
         "max": 17.0,
         "min": 7.0
     },
-    "temparature": {
+    "temperature": {
         "max": 50.0,
         "min": 0.0
     },

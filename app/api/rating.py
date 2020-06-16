@@ -26,7 +26,7 @@ def get_ratings():
     #     wavePeriod=12,
 
     #     cloudCover=0,
-    #     temparature=15,
+    #     temperature=15,
     #     rain=0.0
 
     # ).__dict__
@@ -44,7 +44,7 @@ def get_ratings():
         wavePeriod=float(weatherSummary.waveInfo.wavePeriod),
 
         cloudCover=float(weatherSummary.climateInfo.cloudcover),
-        temparature=float(weatherSummary.climateInfo.temp),
+        temperature=float(weatherSummary.climateInfo.temp),
         rain=float(weatherSummary.climateInfo.rain)
 
     ).__dict__
@@ -52,7 +52,8 @@ def get_ratings():
     sportList = [
         "Kiting",
         "Climbing",
-        "Surfing"
+        "Surfing",
+        "Cycling"
     ]
 
     outSportList = []
