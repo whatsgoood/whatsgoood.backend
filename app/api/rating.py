@@ -1,21 +1,50 @@
-from app.sportEvaluator import weight
-from app.api.weather import liveWeather
+from app.sportEvaluator import getRatingModel
+from app.api.weather import evalModel
 from app.models import weatherSummaryModel, weatherEvalModel
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, abort
 from flask_cors import CORS
+from app import app
 
 rating_bp = Blueprint('rating', __name__)
 CORS(rating_bp)
 
+supportedSports = app.config['SPORTS']
+
+@rating_bp.route('/ratings/<sport>')
+def get_rating(sport):
+
+    if sport.lower() not in supportedSports:
+        return abort(404, "We don't do that here")
+
+    evaluationModel = createEvalModel()
+
+    ratingModel = getRatingModel(evaluationModel, sport)
+
+    return ratingModel
+
+
+
 @rating_bp.route('/ratings')
 def get_ratings():
 
-    weatherSummaryDict = liveWeather().__dict__
+    evaluationModel = createEvalModel()
 
-    weatherSummary = weatherSummaryModel(weatherSummaryDict)
+    outSportList = []
+
+    for sport in supportedSports:
+
+        ratingModel = getRatingModel(evaluationModel, sport)
+
+        outSportList.append(ratingModel)
+
+    return jsonify(outSportList)
+
+def createEvalModel():
+
+    weatherSummary = evalModel()
 
     # region Seed
-    # evaluationModel = weatherEvalModel(
+    # evalulationModel = weatherEvalModel(
 
     #     windHigh=10.0,
     #     windLow=3.0,
@@ -33,7 +62,7 @@ def get_ratings():
 
     # endregion
 
-    evaluationModel = weatherEvalModel(
+    evalulationModel = weatherEvalModel(
 
         windHigh=float(weatherSummary.windInfo.high),
         windLow=float(weatherSummary.windInfo.low),
@@ -49,22 +78,4 @@ def get_ratings():
 
     ).__dict__
 
-    sportList = [
-        "Kiting",
-        "Climbing",
-        "Surfing",
-        "Cycling"
-    ]
-
-    outSportList = []
-
-    for sport in sportList:
-
-        outSportList.append(
-            {
-                "name": sport,
-                "rating": weight(evaluationModel, sport)
-            }
-        )
-
-    return jsonify(outSportList)
+    return evalulationModel

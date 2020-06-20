@@ -1,0 +1,1 @@
+from .sportEvaluator import getRatingModel 

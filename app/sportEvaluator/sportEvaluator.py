@@ -1,4 +1,6 @@
-from app.error import incompleteWeightError, NormaliseKeyNotFoundError
+from app.sportEvaluator.error import incompleteWeightError, NormaliseKeyNotFoundError
+from app.sportEvaluator.evalConfig import normaliseTable, ratingPhrases, sportWeights
+import math
 
 # region Documentation
 
@@ -59,142 +61,12 @@ from app.error import incompleteWeightError, NormaliseKeyNotFoundError
 #
 # endregion
 
-# region Weights
+def getRatingModel(weatherModel, sport):
 
-sportWeights = {
-    "ClimbingWeights": {
-        "temperature": {
-            "weight": 1,
-            "upperBound": 29,
-            "optimalUpperBound": 20,
-            "optimalLowerBound": 10,
-            "lowerBound": 7
-        },
-        "windHigh": -.1,
-        "windAvg": -.1,
-
-        "cloudCover": -.5,
-        "rain": -.8
-    },
-    "SurfingWeights": {
-        "windHigh": {
-            "weight": .3,
-            "upperBound": 15,
-            "optimalUpperBound": 10,
-            "optimalLowerBound": 2,
-            "lowerBound": 1
-        },
-
-        "waveSize": {
-            "weight": .4,
-            "upperBound": 20,
-            "optimalUpperBound": 10,
-            "optimalLowerBound": 7,
-            "lowerBound": 2
-        },
-        "wavePeriod": {
-            "weight": .1,
-            "upperBound": 16,
-            "optimalUpperBound": 12,
-            "optimalLowerBound": 7,
-            "lowerBound": 5
-        },
-
-        "cloudCover": -.5,
-        "temperature": {
-            "weight": .2,
-            "upperBound": 40,
-            "optimalUpperBound": 35,
-            "optimalLowerBound": 15,
-            "lowerBound": 2
-        },
-        "rain": -.5
-    },
-    "KitingWeights": {
-        "windHigh": {
-            "weight": .4,
-            "upperBound": 65,
-            "optimalUpperBound": 45,
-            "optimalLowerBound": 25,
-            "lowerBound": 12
-
-        },
-        "windAvg": {
-            "weight": .3,
-            "upperBound": 65,
-            "optimalUpperBound": 35,
-            "optimalLowerBound": 20,
-            "lowerBound": 10
-        },
-        "temperature": {
-            "weight": .2,
-            "upperBound": 50,
-            "optimalUpperBound": 45,
-            "optimalLowerBound": 20,
-            "lowerBound": 5
-        },
-        "waveSize": .1,
-        "cloudCover": -.3,
-        "rain": -.5
-    },
-    "CyclingWeights": {
-        "temperature": {
-            "weight": 1,
-            "upperBound": 29,
-            "optimalUpperBound": 23,
-            "optimalLowerBound": 16,
-            "lowerBound": 7
-        },
-        "windHigh": -.4,
-        "cloudCover": -.2,
-        "rain": -.4
-    },
-}
-
-normaliseTable = {
-    "windHigh": {
-        "max": 40.0,
-        "min": 5.0,
-    },
-    "windAvg": {
-        "max": 40.0,
-        "min": 5.0,
-    },
-    "windLow": {
-        "max": 40.0,
-        "min": 5.0,
-    },
-    "windDirection": {
-        "SE": .5,
-        "SSE": .5,
-        "NW": .3,
-        "SW": .2
-    },
-    "waveSize": {
-        "max": 15.0,
-        "min": 2.0
-    },
-    "wavePeriod": {
-        "max": 17.0,
-        "min": 7.0
-    },
-    "temperature": {
-        "max": 50.0,
-        "min": 0.0
-    },
-    "rain": {
-        "max": 1.0,
-        "min": 0.0
-    },
-    "cloudCover": {
-        "max": 100.0,
-        "min": 0.0
+    outputModel = {
+        "name": sport.title(),
+        "rating": 0.0
     }
-}
-
-# endregion
-
-def weight(weatherModel, sport):
 
     rating = 0.0
 
@@ -202,7 +74,7 @@ def weight(weatherModel, sport):
 
     sportWeightModel = sportWeights[weightName]
 
-    totalWeight = 0.0
+    outputModel['context'] = initaliseContextModel(sport)
 
     for key in sportWeightModel:
 
@@ -219,10 +91,14 @@ def weight(weatherModel, sport):
             value = normalise(key, weatherModel[key])
 
         ratingIdv = value * weight
-        rating += ratingIdv
-        totalWeight += abs(weight)
 
-    return rating
+        outputModel['rating'] += ratingIdv
+        outputModel = getContext(outputModel, key, sport, ratingIdv, value, weatherModel[key], weight)
+
+    if outputModel['rating'] < 0:
+        outputModel['rating'] = 0
+
+    return outputModel
 
 
 def normalise(key, value):
@@ -318,3 +194,43 @@ def normaliseForOptimal(sportWeight, value):
         normalisedValue = 0
 
     return normalisedValue
+
+def initaliseContextModel(sport):
+
+    try:
+        summary = ratingPhrases[sport]['summary']
+    except KeyError:
+        summary = "No Summary"
+
+    return {
+        "summary": summary,
+        "idvRatings": {}
+    }
+
+def getContext(ratingModel, key, sport, ratingIdv, normalisedVal, actualVal, weight):
+    ratingModel['context']['idvRatings'][key] = {
+        "ratingWeighted": ratingIdv,
+        "ratingNormalised": normalisedVal,
+        "value": actualVal,
+        "Description": getRatingPhrase(key, normalisedVal, sport, weight)
+    }
+    return ratingModel
+
+def getRatingPhrase(key, value, sport, weight):
+
+    floored = math.floor(value / 0.33)
+
+    if floored > 2:
+        floored = 2
+    if floored < 0:
+        floored = 0
+
+    if weight < 0:
+        floored = abs(floored - 2)
+
+    try:
+        keyPhrase = ratingPhrases[sport][key][floored]
+    except KeyError:
+        return "No context"
+
+    return keyPhrase
