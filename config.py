@@ -9,6 +9,12 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
+    SPORTS = [
+        "kiting",
+        "surfing",
+        "climbing",
+        "cycling"
+    ]
 
 
 class DevelopmentConfig(Config):
@@ -25,10 +31,3 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     ENV = "production"
-
-
-sports = [
-    "Kiting",
-    "Surfing",
-    "Climbing"
-]
