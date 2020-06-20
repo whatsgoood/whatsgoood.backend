@@ -1,7 +1,7 @@
 from app.models import waveDBModel, windDBModel, climateDBModel, weatherSummaryModel
 from app import db
 
-from flask import Blueprint
+from flask import Blueprint, abort
 from flask_cors import CORS
 
 weather_bp = Blueprint('weather', __name__)
@@ -79,3 +79,7 @@ def windInfo():
     windModel = windDBModel(latestWindInfo)
 
     return windModel
+
+@weather_bp.route('/weather/live/<other>')
+def catchAll(other):
+    return abort(400, "Invalid weather info requested")
