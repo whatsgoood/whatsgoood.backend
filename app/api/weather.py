@@ -1,39 +1,35 @@
 from app.models import waveDBModel, windDBModel, climateDBModel, weatherSummaryModel
 from app import db
 
-from flask import Blueprint
+from flask import Blueprint, abort
 from flask_cors import CORS
 
 weather_bp = Blueprint('weather', __name__)
 CORS(weather_bp)
 
+
 @weather_bp.route('/weather/live')
 def get_liveWeather():
 
     weatherSummary = weatherSummaryModel({
-        "windInfo": get_windInfo(),
-        "waveInfo": get_waveInfo(),
-        "climateInfo": get_climateInfo()
+        "windInfo": windInfo().__dict__,
+        "waveInfo": waveInfo().__dict__,
+        "climateInfo": climateInfo().__dict__
     })
 
     return weatherSummary.__dict__
 
+@weather_bp.route('/weather/live/<model>')
+def get_weatherModels(model):
 
-def liveWeather():
+    key = model.lower() + "Info"
 
-    weatherSummary = weatherSummaryModel({
-        "windInfo": windInfo(),
-        "waveInfo": waveInfo(),
-        "climateInfo": climateInfo()
-    })
+    liveWeatherModel = get_liveWeather()
 
-    return weatherSummary
-
-
-@weather_bp.route('/weather/live/climate')
-def get_climateInfo():
-
-    return climateInfo().__dict__
+    if key in liveWeatherModel:
+        return liveWeatherModel[key]
+    else:
+        return abort(404, "Invalid weather info requested")
 
 
 def climateInfo():
@@ -47,12 +43,6 @@ def climateInfo():
     return climateModel
 
 
-@weather_bp.route('/weather/live/waves')
-def get_waveInfo():
-
-    return waveInfo().__dict__
-
-
 def waveInfo():
 
     waveInfo_Cursor = db.wavesCollection.find({})
@@ -64,12 +54,6 @@ def waveInfo():
     return waveModel
 
 
-@weather_bp.route('/weather/live/wind')
-def get_windInfo():
-
-    return windInfo().__dict__
-
-
 def windInfo():
 
     windInfo_Cursor = db.windCollection.find({})
@@ -79,3 +63,13 @@ def windInfo():
     windModel = windDBModel(latestWindInfo)
 
     return windModel
+
+def evalModel():
+
+    weatherSummary = weatherSummaryModel({
+        "windInfo": windInfo(),
+        "waveInfo": waveInfo(),
+        "climateInfo": climateInfo()
+    })
+
+    return weatherSummary
