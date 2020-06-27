@@ -34,6 +34,10 @@ normaliseTable = {
         "max": 1.0,
         "min": 0.0
     },
+    "rain12h": {
+        "max": 2.0,
+        "min": 0.0
+    },
     "cloudCover": {
         "max": 100.0,
         "min": 0.0

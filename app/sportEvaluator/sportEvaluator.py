@@ -115,10 +115,7 @@ def normalise(key, value):
             maxVal = normaliseTable[key]['max']
             minVal = normaliseTable[key]['min']
         except(KeyError):
-            # No value found in normalise table,
-            # either not nessesary to normalise or not yet supported
             return value
-            # raise NormaliseKeyNotFoundError(key)
 
     calculatedTotal = maxVal - minVal
 

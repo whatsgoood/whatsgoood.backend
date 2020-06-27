@@ -24,6 +24,11 @@ the same time, clear skies are ideal as rain quite obviously ruins climbing abil
             "It's raining, don't do it",
             "Rain is not looking good",
             "No rain"
+        ],
+        "rain12h": [
+            "Lots of rain recently, rocks might be wet",
+            "There's been rain recently",
+            "No rain in the last 12h"
         ]
     },
     "surfing": {

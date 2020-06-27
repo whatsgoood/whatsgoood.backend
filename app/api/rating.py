@@ -23,7 +23,6 @@ def get_rating(sport):
     return ratingModel
 
 
-
 @rating_bp.route('/ratings')
 def get_ratings():
 
@@ -53,10 +52,12 @@ def createEvalModel():
 
     #     waveSize=7.0,
     #     wavePeriod=12,
+    #     twoDayAvg=5.0,
 
     #     cloudCover=0,
     #     temperature=15,
-    #     rain=0.0
+    #     rain=0.0,
+    #     rain12h = 0.0
 
     # ).__dict__
 
@@ -71,10 +72,12 @@ def createEvalModel():
 
         waveSize=float(weatherSummary.waveInfo.waveSize),
         wavePeriod=float(weatherSummary.waveInfo.wavePeriod),
+        twoDayAvg=float(weatherSummary.waveInfo.twoDayAvg),
 
         cloudCover=float(weatherSummary.climateInfo.cloudcover),
         temperature=float(weatherSummary.climateInfo.temp),
-        rain=float(weatherSummary.climateInfo.rain)
+        rain=float(weatherSummary.climateInfo.rain),
+        rain12h=float(weatherSummary.climateInfo.rain12h)
 
     ).__dict__
 
