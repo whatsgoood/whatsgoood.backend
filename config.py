@@ -15,6 +15,9 @@ class Config(object):
         "climbing",
         "cycling"
     ]
+    FORECASTHOURS = [
+        10, 12, 14, 16, 18, 20
+    ]
 
 
 class DevelopmentConfig(Config):
