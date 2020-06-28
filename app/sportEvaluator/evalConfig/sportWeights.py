@@ -9,9 +9,9 @@ sportWeights = {
         },
         "windHigh": -.1,
         "windAvg": -.1,
-
         "cloudCover": -.5,
-        "rain": -.8
+        "rain": -.8,
+        "rain12h": -.5
     },
     "surfingWeights": {
         "windHigh": {
@@ -21,7 +21,6 @@ sportWeights = {
             "optimalLowerBound": 2,
             "lowerBound": 1
         },
-
         "waveSize": {
             "weight": .4,
             "upperBound": 20,
@@ -36,7 +35,6 @@ sportWeights = {
             "optimalLowerBound": 7,
             "lowerBound": 5
         },
-
         "cloudCover": -.5,
         "temperature": {
             "weight": .2,
@@ -45,7 +43,8 @@ sportWeights = {
             "optimalLowerBound": 15,
             "lowerBound": 2
         },
-        "rain": -.5
+        "rain": -.5,
+        "rain12h": -.2
     },
     "kitingWeights": {
         "windHigh": {
@@ -77,7 +76,8 @@ sportWeights = {
             "lowerBound": 3
         },
         "cloudCover": -.3,
-        "rain": -.5
+        "rain": -.5,
+        "rain12h": -.2
     },
     "cyclingWeights": {
         "temperature": {
@@ -89,6 +89,8 @@ sportWeights = {
         },
         "windHigh": -.4,
         "cloudCover": -.2,
-        "rain": -.4
+        "rain": -.4,
+        "rain12h": -.4
+
     }
 }
