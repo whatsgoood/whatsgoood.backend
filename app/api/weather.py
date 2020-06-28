@@ -1,12 +1,14 @@
+from datetime import datetime, timedelta
 from app.models import waveDBModel, windDBModel, climateDBModel, weatherSummaryModel
-from app import db
+from app import app, db
 
-from flask import Blueprint, abort
+from flask import Blueprint, abort, jsonify
 from flask_cors import CORS
 
 weather_bp = Blueprint('weather', __name__)
 CORS(weather_bp)
 
+forecastHours = app.config['FORECASTHOURS']
 
 @weather_bp.route('/weather/live')
 def get_liveWeather():
@@ -31,38 +33,159 @@ def get_weatherModels(model):
     else:
         return abort(404, "Invalid weather info requested")
 
+@weather_bp.route("/weather/forecast")
+def get_forecastWeather():
 
-def climateInfo():
+    forecastWeather = []
 
-    climateInfo_Cursor = db.climateCollection.find({})
+    for time in getForecastTimes():
 
-    latestClimateInfo = list(climateInfo_Cursor)[-1]
+        windModel = windInfo(time)
+        waveModel = waveInfo(time)
+        climateModel = climateInfo(time)
 
-    climateModel = climateDBModel(latestClimateInfo)
+        if windModel is None or waveModel is None or climateModel is None:
+            forecastWeatherModel = {"Error": f"Incomplete forecast data for time: {time}"}
+            forecastWeather.append(forecastWeatherModel)
+            continue
 
-    return climateModel
+        forecastWeatherModel = {
+            "time": time,
+            "windInfo": windModel.__dict__,
+            "waveInfo": waveModel.__dict__,
+            "climateInfo": climateModel.__dict__
+        }
+
+        forecastWeather.append(forecastWeatherModel)
+
+    return jsonify(forecastWeather)
 
 
-def waveInfo():
+@weather_bp.route("/weather/forecast/<hour>")
+def get_forecastWeather_hourly(hour):
 
-    waveInfo_Cursor = db.wavesCollection.find({})
+    now = datetime.now()
+    time = datetime(now.year, now.month, now.day, int(hour), 0, 0)
 
-    latestWaveInfo = list(waveInfo_Cursor)[-1]
+    windModel = windInfo(time)
+    waveModel = waveInfo(time)
+    climateModel = climateInfo(time)
 
-    waveModel = waveDBModel(latestWaveInfo)
+    if windModel is None or waveModel is None or climateModel is None:
+        forecastWeatherModel = {"Error": f"Incomplete forecast dataset for time: {time}"}
+    else:
+        forecastWeatherModel = {
+            "time": time,
+            "windInfo": windModel.__dict__,
+            "waveInfo": waveModel.__dict__,
+            "climateInfo": climateModel.__dict__
+        }
 
-    return waveModel
+    return forecastWeatherModel
+
+def getForecastTimes():
+
+    now = datetime.now()
+    forecastTimes = []
+
+    for hour in forecastHours:
+        date = datetime(now.year, now.month, now.day, hour, 0, 0)
+        forecastTimes.append(date)
+
+    return forecastTimes
 
 
-def windInfo():
+def climateInfo(time=None):
 
-    windInfo_Cursor = db.windCollection.find({})
+    if time is None:
 
-    latestWindInfo = list(windInfo_Cursor)[-1]
+        climateInfo_Cursor = db.climateCollection.find({})
 
-    windModel = windDBModel(latestWindInfo)
+        climateInfo = list(climateInfo_Cursor)[-1]
 
-    return windModel
+        climateModel = climateDBModel(climateInfo)
+
+        return climateModel
+
+    else:
+
+        climateInfo_Cursor = db.climateForecastCollection.find({
+            "forecastTime": {
+                '$gte': time,
+                '$lt': time + timedelta(hours=1)
+            }
+        })
+
+        try:
+
+            climateInfo = list(climateInfo_Cursor)[0]
+            climateModel = climateDBModel(climateInfo)
+            return climateModel
+
+        except IndexError:
+            return None
+
+
+def waveInfo(time=None):
+
+    if time is None:
+
+        waveInfo_Cursor = db.wavesCollection.find({})
+
+        waveInfo = list(waveInfo_Cursor)[-1]
+
+        waveModel = waveDBModel(waveInfo)
+
+        return waveModel
+
+    else:
+
+        waveInfo_Cursor = db.waveForecastCollection.find({
+            "forecastTime": {
+                '$gte': time,
+                '$lt': time + timedelta(hours=1)
+            }
+        })
+
+        try:
+            waveInfo = list(waveInfo_Cursor)[0]
+            waveModel = waveDBModel(waveInfo)
+            return waveModel
+
+        except IndexError:
+            return None
+
+
+def windInfo(time=None):
+
+    if time is None:
+
+        windInfo_Cursor = db.windCollection.find({})
+
+        windInfo = list(windInfo_Cursor)[-1]
+
+        windModel = windDBModel(windInfo)
+
+        return windModel
+
+    else:
+
+        windInfo_Cursor = db.windForecastCollection.find({
+            "forecastTime": {
+                '$gte': time,
+                '$lt': time + timedelta(hours=1)
+            }
+        })
+
+        try:
+
+            windInfo = list(windInfo_Cursor)[0]
+            windModel = windDBModel(windInfo)
+            return windModel
+
+        except IndexError:
+            return None
+
 
 def evalModel():
 
