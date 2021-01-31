@@ -1,6 +1,6 @@
 from app.sportEvaluator import getRatingModel
 from app.api.weather import evalModel
-from app.models import weatherSummaryModel, weatherEvalModel
+from app.models import weatherEvalModel
 from flask import Blueprint, jsonify, abort, request
 from datetime import datetime
 from flask_cors import CORS
@@ -13,37 +13,36 @@ supportedSports = app.config['SPORTS']
 forecastHours = app.config['FORECASTHOURS']
 
 
-@rating_bp.route('/ratings/live/<sport>')
-def get_rating(sport):
-
-    if sport.lower() not in supportedSports:
-        return abort(404, "We don't do that here")
-
-    evaluationModel = createEvalModel(evalModel())
-
-    ratingModel = getRatingModel(evaluationModel, sport)
-
-    return ratingModel
-
-
 @rating_bp.route('/ratings/live')
-def get_ratings():
+def get_rating():
 
+    sport = request.args.get('sport')
     evaluationModel = createEvalModel(evalModel())
 
-    outSportList = []
+    if sport is None:
 
-    for sport in supportedSports:
+        outSportList = []
+
+        for sport in supportedSports:
+
+            ratingModel = getRatingModel(evaluationModel, sport)
+            outSportList.append(ratingModel)
+
+        return jsonify(outSportList)
+
+    else:
+
+        if sport.lower() not in supportedSports:
+            return abort(404, "We don't do that here")
 
         ratingModel = getRatingModel(evaluationModel, sport)
 
-        outSportList.append(ratingModel)
-
-    return jsonify(outSportList)
+        return ratingModel
 
 
 @rating_bp.route('/ratings/forecast')
 def get_ratingsForecast():
+
     sport = request.args.get('sport')
     hour = request.args.get('hour')
 
@@ -51,8 +50,8 @@ def get_ratingsForecast():
     ratingList = []
     ratingsForecastOutput = {}
 
-    if not hour:
-        #  all hours
+    if not hour:  # all hours
+
         for time in getForecastTimes():
 
             forecastEvalModel = evalModel(time)
@@ -73,8 +72,8 @@ def get_ratingsForecast():
 
             forecastWeather.append(forecastWeatherModel)
 
-    else:
-        #  one hour
+    else:       # one hour
+
         now = datetime.now()
         time = datetime(now.year, now.month, now.day, int(hour), 0, 0)
         forecastEvalModel = evalModel(time)
@@ -95,8 +94,7 @@ def get_ratingsForecast():
 
         forecastWeather.append(forecastWeatherModel)
 
-    if not sport:
-        #  all sports
+    if not sport:  # all sports
         for forecastWeatherObject in forecastWeather:
 
             if forecastWeatherObject['Error'] is not None:
@@ -114,8 +112,7 @@ def get_ratingsForecast():
             ratingsForecastOutput[forecastWeatherObject['time'].hour] = ratingList
             ratingList = []
 
-    else:
-        #  one sport
+    else:           # one sport
         for forecastWeatherObject in forecastWeather:
 
             if forecastWeatherObject['Error'] is not None:
