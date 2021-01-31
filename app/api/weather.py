@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from app.models import waveDBModel, windDBModel, climateDBModel, weatherSummaryModel
 from app import app, db
 
@@ -10,6 +10,32 @@ CORS(weather_bp)
 
 forecastHours = app.config['FORECASTHOURS']
 
+windModels = None
+waveModels = None
+climateModels = None
+
+lastUpdatedTime = None
+
+
+def updateWeatherModels():
+    global lastUpdatedTime
+
+    if lastUpdatedTime is None or ((datetime.now() - lastUpdatedTime).seconds / 60) > 15:
+
+        now = datetime.now()
+        time = datetime(now.year, now.month, now.day, 6, 0, 0)
+
+        global windModels
+        global waveModels
+        global climateModels
+
+        windModels = windForecastInfo(time)
+        waveModels = waveForecastInfo(time)
+        climateModels = climateForecastInfo(time)
+
+        lastUpdatedTime = now
+
+
 @weather_bp.route('/weather/live')
 def get_liveWeather():
 
@@ -20,6 +46,7 @@ def get_liveWeather():
     })
 
     return weatherSummary.__dict__
+
 
 @weather_bp.route('/weather/live/<model>')
 def get_weatherModels(model):
@@ -33,10 +60,13 @@ def get_weatherModels(model):
     else:
         return abort(404, "Invalid weather info requested")
 
+
 @weather_bp.route("/weather/forecast")
 def get_forecastWeather():
 
     forecastWeather = []
+
+    updateWeatherModels()
 
     for time in getForecastTimes():
 
@@ -67,6 +97,8 @@ def get_forecastWeather_hourly(hour):
     now = datetime.now()
     time = datetime(now.year, now.month, now.day, int(hour), 0, 0)
 
+    updateWeatherModels()
+
     windModel = windInfo(time)
     waveModel = waveInfo(time)
     climateModel = climateInfo(time)
@@ -83,6 +115,95 @@ def get_forecastWeather_hourly(hour):
 
     return forecastWeatherModel
 
+
+def climateForecastInfo(startTime):
+
+    climateInfo_Cursor = db.climateForecastCollection.find({
+        "forecastTime": {
+            '$gte': startTime
+        }
+    })
+
+    climateInfo = list(climateInfo_Cursor)
+    return climateInfo
+
+
+def climateInfo(time=None):
+
+    climateModel = None
+
+    if time is None:    # live
+        climateInfo_Cursor = db.climateCollection.find({})
+        climateInfo = list(climateInfo_Cursor)[-1]
+        climateModel = climateDBModel(climateInfo)
+    else:               # forecast
+        for model in climateModels:
+            if model['forecastTime'] == time:
+                climateModel = climateDBModel(model)
+                break
+
+    return climateModel or None
+
+
+def waveForecastInfo(startTime):
+
+    waveInfo_Cursor = db.waveForecastCollection.find({
+        "forecastTime": {
+            '$gte': startTime
+        }
+    })
+
+    waveInfo = list(waveInfo_Cursor)
+
+    return waveInfo
+
+
+def waveInfo(time=None):
+
+    waveModel = None
+
+    if time is None:    # live
+        waveInfo_Cursor = db.wavesCollection.find({})
+        waveInfo = list(waveInfo_Cursor)[-1]
+        waveModel = waveDBModel(waveInfo)
+    else:               # forecast
+        for model in waveModels:
+            if model['forecastTime'] == time:
+                waveModel = waveDBModel(model)
+                break
+
+    return waveModel or None
+
+
+def windForecastInfo(startTime):
+
+    windInfo_Cursor = db.windForecastCollection.find({
+        "forecastTime": {
+            '$gte': startTime
+        }
+    })
+
+    windInfo = list(windInfo_Cursor)
+    return windInfo
+
+
+def windInfo(time=None):
+
+    windModel = None
+
+    if time is None:    # live
+        windInfo_Cursor = db.windCollection.find({})
+        windInfo = list(windInfo_Cursor)[-1]
+        windModel = windDBModel(windInfo)
+    else:               # forecast
+        for model in windModels:
+            if model['forecastTime'] == time:
+                windModel = windDBModel(model)
+                break
+
+    return windModel
+
+
 def getForecastTimes():
 
     now = datetime.now()
@@ -95,104 +216,12 @@ def getForecastTimes():
     return forecastTimes
 
 
-def climateInfo(time=None):
-
-    if time is None:
-
-        climateInfo_Cursor = db.climateCollection.find({})
-
-        climateInfo = list(climateInfo_Cursor)[-1]
-
-        climateModel = climateDBModel(climateInfo)
-
-        return climateModel
-
-    else:
-
-        climateInfo_Cursor = db.climateForecastCollection.find({
-            "forecastTime": {
-                '$gte': time,
-                '$lt': time + timedelta(hours=1)
-            }
-        })
-
-        try:
-
-            climateInfo = list(climateInfo_Cursor)[0]
-            climateModel = climateDBModel(climateInfo)
-            return climateModel
-
-        except IndexError:
-            return None
-
-
-def waveInfo(time=None):
-
-    if time is None:
-
-        waveInfo_Cursor = db.wavesCollection.find({})
-
-        waveInfo = list(waveInfo_Cursor)[-1]
-
-        waveModel = waveDBModel(waveInfo)
-
-        return waveModel
-
-    else:
-
-        waveInfo_Cursor = db.waveForecastCollection.find({
-            "forecastTime": {
-                '$gte': time,
-                '$lt': time + timedelta(hours=1)
-            }
-        })
-
-        try:
-            waveInfo = list(waveInfo_Cursor)[0]
-            waveModel = waveDBModel(waveInfo)
-            return waveModel
-
-        except IndexError:
-            return None
-
-
-def windInfo(time=None):
-
-    if time is None:
-
-        windInfo_Cursor = db.windCollection.find({})
-
-        windInfo = list(windInfo_Cursor)[-1]
-
-        windModel = windDBModel(windInfo)
-
-        return windModel
-
-    else:
-
-        windInfo_Cursor = db.windForecastCollection.find({
-            "forecastTime": {
-                '$gte': time,
-                '$lt': time + timedelta(hours=1)
-            }
-        })
-
-        try:
-
-            windInfo = list(windInfo_Cursor)[0]
-            windModel = windDBModel(windInfo)
-            return windModel
-
-        except IndexError:
-            return None
-
-
-def evalModel():
+def evalModel(time=None):
 
     weatherSummary = weatherSummaryModel({
-        "windInfo": windInfo(),
-        "waveInfo": waveInfo(),
-        "climateInfo": climateInfo()
+        "windInfo": windInfo(time),
+        "waveInfo": waveInfo(time),
+        "climateInfo": climateInfo(time)
     })
 
     return weatherSummary
