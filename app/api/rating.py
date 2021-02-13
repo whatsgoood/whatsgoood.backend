@@ -1,5 +1,5 @@
 from app.sportEvaluator import getRatingModel
-from app.api.weather import evalModel
+from app.api.weather import evalModel, updateWeatherModels
 from app.models import weatherEvalModel
 from flask import Blueprint, jsonify, abort, request
 from datetime import datetime
@@ -50,24 +50,26 @@ def get_ratingsForecast():
     ratingList = []
     ratingsForecastOutput = {}
 
+    updateWeatherModels()
+
     if not hour:  # all hours
 
         for time in getForecastTimes():
 
-            forecastEvalModel = evalModel(time)
+            try:
+                forecastEvalModel = evalModel(time)
 
-            if forecastEvalModel.windInfo is None or forecastEvalModel.waveInfo is None or forecastEvalModel.climateInfo is None:
-                forecastWeatherModel = {
-                    "Error": "Incomplete forecast dataset",
-                    "time": time
-                }
-            else:
                 forecastWeatherModel = {
                     "time": time,
                     "windInfo": forecastEvalModel.windInfo.__dict__,
                     "waveInfo": forecastEvalModel.waveInfo.__dict__,
                     "climateInfo": forecastEvalModel.climateInfo.__dict__,
                     "Error": None
+                }
+            except Exception:
+                forecastWeatherModel = {
+                    "Error": "Incomplete forecast dataset",
+                    "time": time
                 }
 
             forecastWeather.append(forecastWeatherModel)
@@ -76,20 +78,23 @@ def get_ratingsForecast():
 
         now = datetime.now()
         time = datetime(now.year, now.month, now.day, int(hour), 0, 0)
-        forecastEvalModel = evalModel(time)
 
-        if forecastEvalModel.windInfo is None or forecastEvalModel.waveInfo is None or forecastEvalModel.climateInfo is None:
-            forecastWeatherModel = {
-                "Error": "Incomplete forecast dataset",
-                "time": time
-            }
-        else:
+        try:
+
+            forecastEvalModel = evalModel(time)
+
             forecastWeatherModel = {
                 "time": time,
                 "windInfo": forecastEvalModel.windInfo.__dict__,
                 "waveInfo": forecastEvalModel.waveInfo.__dict__,
                 "climateInfo": forecastEvalModel.climateInfo.__dict__,
                 "Error": None
+            }
+
+        except Exception:
+            forecastWeatherModel = {
+                "Error": "Incomplete forecast dataset",
+                "time": time
             }
 
         forecastWeather.append(forecastWeatherModel)
