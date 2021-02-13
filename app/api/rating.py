@@ -48,7 +48,7 @@ def get_ratingsForecast():
 
     forecastWeather = []
     ratingList = []
-    ratingsForecastOutput = {}
+    ratingsForecastOutput = []
 
     updateWeatherModels()
 
@@ -114,7 +114,10 @@ def get_ratingsForecast():
 
                     ratingList.append(ratingModel)
 
-            ratingsForecastOutput[forecastWeatherObject['time'].hour] = ratingList
+            ratingsForecastOutput.append({
+                "time": forecastWeatherObject['time'].hour,
+                "ratingList": ratingList
+            })
             ratingList = []
 
     else:           # one sport
@@ -131,7 +134,10 @@ def get_ratingsForecast():
 
                 ratingList = [ratingModel]
 
-            ratingsForecastOutput[forecastWeatherObject['time'].hour] = ratingList
+            ratingsForecastOutput.append({
+                "time": forecastWeatherObject['time'].hour,
+                "ratingList": ratingList
+            })
             ratingList = []
 
     return jsonify(ratingsForecastOutput)
