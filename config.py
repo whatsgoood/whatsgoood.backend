@@ -12,8 +12,8 @@ class Config(object):
     SPORTS = [
         "kiting",
         "surfing",
-        "climbing",
-        "cycling"
+        "climbing"
+        # "cycling"
     ]
     FORECASTHOURS = [
         10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20

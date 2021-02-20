@@ -42,10 +42,16 @@ def get_rating():
 
 @rating_bp.route('/ratings/forecast')
 def get_ratingsForecast():
-
     sport = request.args.get('sport')
     hour = request.args.get('hour')
 
+    if sport and sport.lower() not in supportedSports:
+        return abort(404, "We don't do that here")
+
+    if hour and (not hour.isdigit() or int(hour) not in forecastHours):
+        return abort(404, "Time requesetd not available")
+
+    err = None
     forecastWeather = []
     ratingList = []
     ratingsForecastOutput = []
@@ -63,14 +69,10 @@ def get_ratingsForecast():
                     "time": time,
                     "windInfo": forecastEvalModel.windInfo.__dict__,
                     "waveInfo": forecastEvalModel.waveInfo.__dict__,
-                    "climateInfo": forecastEvalModel.climateInfo.__dict__,
-                    "Error": None
+                    "climateInfo": forecastEvalModel.climateInfo.__dict__
                 }
             except Exception:
-                forecastWeatherModel = {
-                    "Error": "Incomplete forecast dataset",
-                    "time": time
-                }
+                continue
 
             forecastWeather.append(forecastWeatherModel)
 
@@ -87,32 +89,26 @@ def get_ratingsForecast():
                 "time": time,
                 "windInfo": forecastEvalModel.windInfo.__dict__,
                 "waveInfo": forecastEvalModel.waveInfo.__dict__,
-                "climateInfo": forecastEvalModel.climateInfo.__dict__,
-                "Error": None
+                "climateInfo": forecastEvalModel.climateInfo.__dict__
             }
 
-        except Exception:
-            forecastWeatherModel = {
-                "Error": "Incomplete forecast dataset",
-                "time": time
-            }
+        except Exception as e:
+            err = str(e)
 
-        forecastWeather.append(forecastWeatherModel)
+        if not err:
+            forecastWeather.append(forecastWeatherModel)
 
     if not sport:  # all sports
         for forecastWeatherObject in forecastWeather:
 
-            if forecastWeatherObject['Error'] is not None:
-                ratingList = [forecastWeatherObject]
-            else:
-                for sport in supportedSports:
+            for sport in supportedSports:
 
-                    evaluationModel = createEvalModel(
-                        evalModel(forecastWeatherObject['time']))
+                evaluationModel = createEvalModel(
+                    evalModel(forecastWeatherObject['time']))
 
-                    ratingModel = getRatingModel(evaluationModel, sport)
+                ratingModel = getRatingModel(evaluationModel, sport)
 
-                    ratingList.append(ratingModel)
+                ratingList.append(ratingModel)
 
             ratingsForecastOutput.append({
                 "time": forecastWeatherObject['time'].hour,
@@ -123,16 +119,12 @@ def get_ratingsForecast():
     else:           # one sport
         for forecastWeatherObject in forecastWeather:
 
-            if forecastWeatherObject['Error'] is not None:
-                ratingList = [forecastWeatherObject]
-            else:
+            evaluationModel = createEvalModel(
+                evalModel(forecastWeatherObject['time']))
 
-                evaluationModel = createEvalModel(
-                    evalModel(forecastWeatherObject['time']))
+            ratingModel = getRatingModel(evaluationModel, sport)
 
-                ratingModel = getRatingModel(evaluationModel, sport)
-
-                ratingList = [ratingModel]
+            ratingList = [ratingModel]
 
             ratingsForecastOutput.append({
                 "time": forecastWeatherObject['time'].hour,

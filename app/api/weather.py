@@ -60,8 +60,6 @@ def get_forecastWeather():
             climateModel = climateInfo(time)
 
             if windModel is None or waveModel is None or climateModel is None:
-                forecastWeatherModel = {"Error": f"Incomplete forecast data for time: {time}"}
-                forecastWeather.append(forecastWeatherModel)
                 continue
 
             forecastWeatherModel = {
@@ -87,7 +85,7 @@ def get_forecastWeather():
         climateModel = climateInfo(time)
 
         if windModel is None or waveModel is None or climateModel is None:
-            forecastWeatherModel = {"Error": f"Incomplete forecast dataset for time: {time}"}
+            return jsonify([])
         else:
             forecastWeatherModel = {
                 "time": time,
@@ -96,7 +94,7 @@ def get_forecastWeather():
                 "climateInfo": climateModel.__dict__
             }
 
-        return forecastWeatherModel
+        return jsonify([forecastWeatherModel])
 
 
 def climateForecastInfo(startTime):
