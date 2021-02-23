@@ -8,14 +8,19 @@ import math
 
 # All weights must add up to 1
 
-# In the case that a rating should get better as a particular piece of weather info tends toward a certain value
+# 1. In the case that a rating should get better as a particular piece of weather info tends toward a certain value
 # eg. temperature for kiting can never really be too high.
 # Simply give it a weight in the sportWeight table, and it will be normalised between a max and min value using the
 # normalise table
 
-# If there is an optimal point for a particular piece of weather info(eg. climbing where you'd like temps to be around
+# eg.
+# "temperature": 0.1
+
+# 2. If there is an optimal point for a particular piece of weather info(eg. climbing where you'd like temps to be around
 # 10-15 deg)
-# Then you have to pass in a dictionary, eg.
+# Then you have to pass in a dictionary
+
+# eg.
 
 # "temperature": {
 #     "weight": .40,
@@ -28,7 +33,9 @@ import math
 # If your optimal is 10 and your tolerance is 5, 15 will yield a 0 rating.
 
 # If you need to use an optimal value, but your tolerance is lower on one side than the other, then you can set
-# upperBound and lowerBound:
+# upperBound and lowerBound
+
+# eg.
 
 # "temperature": {
 #     "weight": .40,
@@ -37,21 +44,38 @@ import math
 #     "lowerBound": 12
 # }
 
+# If there is an optimal "plateu", ie. a range of optimal values for a given piece of wether info, you can contrain 
+# optimalUpper and Lower bounds where the score returned will be 100% if it falls between those two values
+
+# eg.
+
+# "temperature": {
+#     "weight": 1,
+#     "upperBound": 29,
+#     "optimalUpperBound": 20,
+#     "optimalLowerBound": 10,
+#     "lowerBound": 7
+# }
+
+
+
+
+
 # Currently values increase linearly as they tend toward your optimal value
 
-# eg. :
-
-#                                    dankness (y)
-#                                       |
-#                                      10------------- 0
-#                                       |             / \
-#                                       |           /    \
-#                                       |         /       \
-#                                       |       /          \         upperBound
-#                                       |     /             \      /
-#                                       |   /                \   /
-# -----------------------------------------1-------------6-----8--------------------- temp (x)
-#                                       |  \            \
+# eg. :                                     optimalLowerBound
+#                                                  \
+#                                    dankness (y)   \         optimalUpperBound
+#                                       |            \       /
+#                                      10             *_____*
+#                                       |             /     \
+#                                       |           /        \
+#                                       |         /           \
+#                                       |       /              \     upperBound
+#                                       |     /                 \   /
+#                                       |   /                    \ *
+# -----------------------------------------1------------6---------8--------------------- temp (x)
+#                                       |  *            *
 #                                       |   \            \
 #                                       |    lowerBound   optimalValue
 #                                       |
